@@ -3,7 +3,6 @@
 ## Способ 1: Автоматический скрипт (рекомендуется)
 
 ```bash
-cd /home/vidserv/web-vk-bot
 ./upload-to-github.sh
 ```
 
@@ -37,7 +36,6 @@ gh auth login
 ### 3. Создайте репозиторий и запушьте
 
 ```bash
-cd /home/vidserv/web-vk-bot
 gh repo create vk-neuro-agents --public --source=. --remote=origin --push
 ```
 
@@ -56,8 +54,6 @@ gh repo create vk-neuro-agents --public --source=. --remote=origin --push
 ### 2. Запушьте код
 
 ```bash
-cd /home/vidserv/web-vk-bot
-
 # При пуше введите ваш GitHub логин и токен
 git push -u origin main
 ```
@@ -76,7 +72,7 @@ git push -u origin main
 Ваш репозиторий будет доступен по адресу:
 
 ```
-https://github.com/eugene-nilyason/vk-neuro-agents
+https://github.com/eugenenilyason-sketch/vk-neuro-agents
 ```
 
 ---

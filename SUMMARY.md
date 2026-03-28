@@ -230,7 +230,6 @@
 
 ### 1. Инициализация проекта
 ```bash
-cd /home/vidserv/web-vk-bot
 ./scripts/init.sh
 ```
 

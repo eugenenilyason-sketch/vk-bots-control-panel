@@ -54,7 +54,6 @@ docker-compose --version
 ## 🔧 Шаг 2: Клонирование проекта
 
 ```bash
-cd /home/vidserv
 git clone <repository-url> web-vk-bot
 cd web-vk-bot
 ```

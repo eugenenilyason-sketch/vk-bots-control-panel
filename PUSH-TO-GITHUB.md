@@ -16,9 +16,8 @@
 #    Имя: vk-neuro-agents
 #    НЕ инициализировать README!
 
-# 2. Добавьте remote (замените eugene-nilyason на ваш логин)
-cd /home/vidserv/web-vk-bot
-git remote add origin https://github.com/eugene-nilyason/vk-neuro-agents.git
+# 2. Добавьте remote (репозиторий уже настроен)
+git remote add origin https://github.com/eugenenilyason-sketch/vk-neuro-agents.git
 
 # 3. Запушьте
 git push -u origin main
@@ -33,7 +32,7 @@ git push -u origin main
 После загрузки:
 
 ```
-https://github.com/eugene-nilyason/vk-neuro-agents
+https://github.com/eugenenilyason-sketch/vk-neuro-agents
 ```
 
 ---

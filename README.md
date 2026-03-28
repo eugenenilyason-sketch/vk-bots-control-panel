@@ -20,8 +20,6 @@
 ### 2. Клонирование и настройка
 
 ```bash
-cd /home/vidserv/web-vk-bot
-
 # Копирование переменных окружения
 cp .env.example .env
 
@@ -41,12 +39,14 @@ YOOMONEY_API_KEY=your_api_key
 
 ## 📚 Документация
 
-- [Полная спецификация](PROJECT-SPEC.md)
-- [API документация](docs/API.md)
-- [Инструкция по деплою](docs/DEPLOYMENT.md)
-- [ЮMoney P2P интеграция](docs/YOOMONEY-P2P.md)
-- [Roadmap](ROADMAP.md)
-- [Changelog](CHANGELOG.md)
+- [📋 Полная спецификация](PROJECT-SPEC.md)
+- [📡 API документация](docs/API.md)
+- [🚀 Инструкция по деплою](docs/DEPLOYMENT.md)
+- [💳 ЮMoney P2P интеграция](docs/YOOMONEY-P2P.md)
+- [🗺️ Roadmap](ROADMAP.md)
+- [📝 Changelog](CHANGELOG.md)
+- [⚙️ Настройка Nginx Proxy Manager](docs/NPM-SETUP.md)
+- [📤 Загрузка на GitHub](docs/GITHUB-UPLOAD.md)
 
 ## 🛠 Технологический стек
 

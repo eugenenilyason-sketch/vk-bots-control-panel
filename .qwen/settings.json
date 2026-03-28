@@ -33,7 +33,14 @@
       "Bash(git config *)",
       "Bash(git branch *)",
       "Bash(git add *)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(git commit *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(chmod *)",
+      "Bash(./upload-to-github.sh)",
+      "Bash(gh *)",
+      "Bash(grep *)"
     ]
   },
   "$version": 3

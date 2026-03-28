@@ -93,7 +93,6 @@ location /health {
 Скопируйте `.env.example` в `.env` и обновите:
 
 ```bash
-cd /home/vidserv/web-vk-bot
 cp .env.example .env
 nano .env
 ```
@@ -123,8 +122,6 @@ YOOMONEY_WEBHOOK_URL=https://yourdomain.com/webhook/yoomoney
 ### 4. Перезапуск сервисов
 
 ```bash
-cd /home/vidserv/web-vk-bot
-
 # Остановка старых контейнеров
 docker compose down
 

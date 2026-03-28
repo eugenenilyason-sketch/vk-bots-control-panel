@@ -32,8 +32,6 @@ npm --version
 ### 2.1 Копирование файлов
 
 ```bash
-cd /home/vidserv/web-vk-bot
-
 # Копирование .env файлов
 cp .env.example .env
 cp frontend/.env.example frontend/.env
@@ -81,8 +79,6 @@ VITE.VK_REDIRECT_URI=http://localhost:3000/login
 ### 3.1 Запуск сервисов
 
 ```bash
-cd /home/vidserv/web-vk-bot
-
 # Запуск базовых сервисов
 docker compose up -d nginx-proxy-manager n8n nocodb supabase redis watchtower
 ```
