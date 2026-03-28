@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VK Neuro-Agents</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 400px;
+    }
+    h1 { color: #667eea; margin-bottom: 10px; }
+    p { color: #666; margin-bottom: 30px; }
+    .btn {
+      background: #0077FF;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn:hover { background: #0066DD; transform: translateY(-2px); }
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .status.success { background: #d4edda; color: #155724; }
+    .status.error { background: #f8d7da; color: #721c24; }
+    .loading { opacity: 0.6; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🤖 VK Neuro-Agents</h1>
+    <p>Система управления нейро-агентами ВКонтакте</p>
+    
+    <button class="btn" id="vkLogin" onclick="loginVK()">
+      Войти через VK
+    </button>
+    
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const VK_CLIENT_ID = 'your_vk_client_id';
+    const REDIRECT_URI = window.location.origin;
+    const API_URL = window.location.origin;
+
+    function loginVK() {
+      const authUrl = `https://oauth.vk.com/authorize?client_id=${VK_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=messages,groups,offline`;
+      window.location.href = authUrl;
+    }
+
+    // Обработка OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    if (code) {
+      document.getElementById('vkLogin').classList.add('loading');
+      document.getElementById('vkLogin').textContent = 'Вход...';
+      
+      fetch(`${API_URL}/api/auth/vk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem('auth', JSON.stringify(data.data));
+          showStatus('✅ Вход успешен! Перенаправление...', 'success');
+          setTimeout(() => window.location.href = '/dashboard.html', 1500);
+        } else {
+          showStatus('❌ Ошибка: ' + data.error?.message, 'error');
+          document.getElementById('vkLogin').classList.remove('loading');
+          document.getElementById('vkLogin').textContent = 'Войти через VK';
+        }
+      })
+      .catch(err => {
+        showStatus('❌ Ошибка подключения к серверу', 'error');
+        document.getElementById('vkLogin').classList.remove('loading');
+        document.getElementById('vkLogin').textContent = 'Войти через VK';
+      });
+    }
+
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = 'status ' + type;
+    }
+
+    // Проверка авторизации
+    const auth = JSON.parse(localStorage.getItem('auth') || 'null');
+    if (auth && !code) {
+      window.location.href = '/dashboard.html';
+    }
+  </script>
+</body>
+</html>

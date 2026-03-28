@@ -1,0 +1,263 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  superadmin
+  admin
+  user
+}
+
+enum BotStatus {
+  active
+  inactive
+  blocked
+  pending
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
+}
+
+enum PaymentType {
+  deposit
+  subscription
+  one_time
+}
+
+model User {
+  id              String      @id @default(uuid())
+  vkId            BigInt?     @unique @map(name: "vk_id")
+  email           String?     @unique
+  username        String?
+  firstName       String?     @map(name: "first_name")
+  lastName        String?     @map(name: "last_name")
+  avatarUrl       String?     @map(name: "avatar_url")
+  role            UserRole    @default(user)
+  balance         Decimal     @default(0.00) @db.Decimal(10, 2)
+  isActive        Boolean     @default(true) @map(name: "is_active")
+  isBlocked       Boolean     @default(false) @map(name: "is_blocked")
+  createdAt       DateTime    @default(now()) @map(name: "created_at")
+  updatedAt       DateTime    @updatedAt @map(name: "updated_at")
+
+  sessions        UserSession[]
+  bots            Bot[]
+  payments        Payment[]
+  subscriptions   Subscription[]
+  targetAudiences TargetAudience[]
+  messages        Message[]
+  analytics       Analytics[]
+  apiKeys         ApiKey[]
+  systemLogs      SystemLog[]
+
+  @@map("users")
+}
+
+model UserSession {
+  id           String   @id @default(uuid())
+  userId       String   @map(name: "user_id")
+  refreshToken String   @map(name: "refresh_token")
+  accessToken  String   @map(name: "access_token")
+  expiresAt    DateTime @map(name: "expires_at")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  lastActive   DateTime @default(now()) @map(name: "last_active")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
+}
+
+model Bot {
+  id               String     @id @default(uuid())
+  userId           String     @map(name: "user_id")
+  name             String
+  vkGroupId        BigInt?    @map(name: "vk_group_id")
+  vkToken          String?    @map(name: "vk_token")
+  status           BotStatus  @default(pending)
+  config           Json       @default("{}")
+  webhookUrl       String?    @map(name: "webhook_url")
+  lastActivity     DateTime?  @map(name: "last_activity")
+  messagesSent     Int        @default(0) @map(name: "messages_sent")
+  messagesReceived Int        @default(0) @map(name: "messages_received")
+  createdAt        DateTime   @default(now()) @map(name: "created_at")
+  updatedAt        DateTime   @updatedAt @map(name: "updated_at")
+
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages   Message[]
+  analytics  Analytics[]
+  targetAudiences TargetAudience[]
+
+  @@map("bots")
+}
+
+model TargetAudience {
+  id          String   @id @default(uuid())
+  userId      String   @map(name: "user_id")
+  botId       String?  @map(name: "bot_id")
+  name        String
+  description String?
+  data        Json     @default("[]")
+  size        Int      @default(0)
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bot  Bot? @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@map("target_audiences")
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  userId            String        @map(name: "user_id")
+  amount            Decimal       @db.Decimal(10, 2)
+  currency          String        @default("RUB")
+  status            PaymentStatus @default(pending)
+  type              PaymentType   @default(deposit)
+  provider          String        @default("yookassa")
+  providerPaymentId String?       @map(name: "provider_payment_id")
+  description       String?
+  metadata          Json          @default("{}")
+  paidAt            DateTime?     @map(name: "paid_at")
+  createdAt         DateTime      @default(now()) @map(name: "created_at")
+  updatedAt         DateTime      @updatedAt @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Subscription {
+  id         String   @id @default(uuid())
+  userId     String   @map(name: "user_id")
+  plan       String
+  status     String   @default("active")
+  startDate  DateTime @default(now()) @map(name: "start_date")
+  endDate    DateTime? @map(name: "end_date")
+  autoRenew  Boolean  @default(true) @map(name: "auto_renew")
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model Message {
+  id            String   @id @default(uuid())
+  botId         String   @map(name: "bot_id")
+  userId        String?  @map(name: "user_id")
+  vkMessageId   BigInt?  @map(name: "vk_message_id")
+  direction     String
+  content       String?
+  attachments   Json     @default("[]")
+  isProcessed   Boolean  @default(false) @map(name: "is_processed")
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+
+  bot  Bot? @relation(fields: [botId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("messages")
+}
+
+model Analytics {
+  id          String   @id @default(uuid())
+  botId       String?  @map(name: "bot_id")
+  userId      String   @map(name: "user_id")
+  metricType  String   @map(name: "metric_type")
+  metricValue Decimal  @default(0) @map(name: "metric_value") @db.Decimal(15, 2)
+  metricData  Json     @default("{}") @map(name: "metric_data")
+  recordedAt  DateTime @default(now()) @map(name: "recorded_at")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+
+  bot  Bot? @relation(fields: [botId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("analytics")
+}
+
+model ApiKey {
+  id         String   @id @default(uuid())
+  userId     String   @map(name: "user_id")
+  name       String
+  keyHash    String   @map(name: "key_hash")
+  keyPrefix  String   @map(name: "key_prefix")
+  permissions Json    @default("{}")
+  expiresAt  DateTime? @map(name: "expires_at")
+  lastUsedAt DateTime? @map(name: "last_used_at")
+  isActive   Boolean  @default(true) @map(name: "is_active")
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+model SystemLog {
+  id          String   @id @default(uuid())
+  userId      String?  @map(name: "user_id")
+  action      String
+  resource    String?
+  resourceId  String?  @map(name: "resource_id")
+  ipAddress   String?  @map(name: "ip_address")
+  userAgent   String?  @map(name: "user_agent")
+  statusCode  Int?     @map(name: "status_code")
+  errorMessage String? @map(name: "error_message")
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("system_logs")
+}
+
+model Setting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("settings")
+}
+
+model PaymentMethod {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  displayName  String   @map(name: "display_name")
+  description  String?
+  isEnabled    Boolean  @default(false) @map(name: "is_enabled")
+  isAdminOnly  Boolean  @default(false) @map(name: "is_admin_only")
+  config       Json     @default("{}")
+  icon         String?
+  sortOrder    Int      @default(0) @map(name: "sort_order")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("payment_methods")
+}
+
+model YoomoneyP2p {
+  id              String   @id @default(uuid())
+  accountNumber   String   @unique @map(name: "account_number")
+  verifiedUserVkId BigInt? @map(name: "verified_user_vk_id")
+  verifiedUserName String? @map(name: "verified_user_name")
+  isVerified      Boolean  @default(false) @map(name: "is_verified")
+  isActive        Boolean  @default(true) @map(name: "is_active")
+  apiKeyHash      String?  @map(name: "api_key_hash")
+  webhookSecret   String?  @map(name: "webhook_secret")
+  lastPaymentCheck DateTime? @map(name: "last_payment_check")
+  notes           String?
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("yoomoney_p2p")
+}
