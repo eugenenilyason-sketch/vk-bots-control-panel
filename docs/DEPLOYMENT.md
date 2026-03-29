@@ -102,9 +102,9 @@ VK_REDIRECT_URI=https://yourdomain.com/auth/vk/callback
 
 ---
 
-## 🔧 Шаг 5: Настройка Nginx Proxy Manager
+## 🔧 Шаг 5: Настройка Docker
 
-1. Откройте Nginx Proxy Manager: `http://your-server-ip:81`
+1. Откройте Docker: `http://your-server-ip:81`
 2. Логин: `admin@example.com`
 3. Пароль: `changeme`
 
@@ -318,7 +318,6 @@ sudo ufw enable
 
 - Все сервисы должны работать только по HTTPS
 - Используйте Let's Encrypt для SSL сертификатов
-- Включите HSTS в Nginx
 
 ---
 
@@ -351,7 +350,7 @@ docker exec supabase ls -la /docker-entrypoint-initdb.d/
 
 ```bash
 # Пересоздание SSL сертификатов
-# В Nginx Proxy Manager:
+# В Docker:
 # 1. Удалите старый сертификат
 # 2. Запросите новый
 ```
