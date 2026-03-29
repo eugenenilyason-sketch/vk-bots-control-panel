@@ -93,6 +93,8 @@ services:
       - NC_DB=pg://supabase:5432?u=postgres&p=${POSTGRES_PASSWORD}&d=vk_bot
       - NC_AUTH_JWT_SECRET=${NC_JWT_SECRET}
       - NC_PUBLIC_URL=${NC_PUBLIC_URL:-http://localhost:8080}
+      # Разрешить подключение к внутренним Docker хостам
+      - NC_CONNECT_TO_INTERNAL_DB=true
     volumes:
       - ./nocodb/data:/usr/app/data
     depends_on:
