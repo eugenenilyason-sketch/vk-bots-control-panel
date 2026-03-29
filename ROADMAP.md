@@ -77,11 +77,11 @@
 
 ### Неделя 1: Docker сервисы
 
-- [x] **1.1** Nginx Proxy Manager настройка
-  - [x] Установка и базовая конфигурация
-  - [x] Настройка SSL сертификатов (документация)
-  - [x] Конфигурация proxy rules (nginx/app.conf)
-  - [x] Тестирование HTTPS
+- [x] **1.1** Docker сервисы настройка
+  - [x] Запуск контейнеров
+  - [x] Настройка портов
+  - [x] Конфигурация сети
+  - [x] Тестирование подключения
 
 - [x] **1.2** Supabase (PostgreSQL) развёртывание
   - [x] Запуск контейнера
@@ -121,12 +121,9 @@
 
 ```
 ✅ docker-compose.yml (полная Docker изоляция)
-✅ nginx/app.conf
 ✅ supabase/migrations/000_init.sql
 ✅ scripts/backup.sh
 ✅ docs/DEPLOYMENT.md
-✅ docs/NPM-SETUP.md
-✅ docs/NPM-CHAIN-SETUP.md
 ```
 
 ### Критерии завершения
@@ -286,7 +283,6 @@
 ✅ frontend/public/ (6 HTML страниц)
 ✅ frontend/package.json
 ✅ frontend/Dockerfile
-✅ frontend/nginx.conf
 ✅ frontend/src/ (React компоненты - код готов)
 ```
 

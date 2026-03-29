@@ -35,8 +35,8 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│              Nginx Proxy Manager (Port 80, 443)          │
-│         Reverse Proxy + SSL + Domain Routing             │
+│              Docker Network                              │
+│           Direct Port Access                             │
 └─────────────────────────────────────────────────────────┘
                             │
     ┌───────────────────────┼───────────────────────┐
@@ -71,7 +71,6 @@
 
 | Сервис | Образ | Порт | Назначение |
 |--------|-------|------|------------|
-| `nginx-proxy-manager` | jc21/nginx-proxy-manager | 80, 81, 443 | Reverse proxy + SSL |
 | `frontend` | Custom (React) | 3000 | Frontend приложение |
 | `backend` | Custom (Node.js) | 4000 | REST API сервер |
 | `n8n` | n8n/n8n | 5678 | Workflow автоматизация |
@@ -178,11 +177,7 @@
 - Создать приложение в [VK Developers](https://vk.com/dev)
 - Обновить `.env` файлик
 
-### 3. Настройка доменов и SSL
-- Настроить домены в Nginx Proxy Manager
-- Получить SSL сертификаты Let's Encrypt
-
-### 4. Настройка платёжной системы
+### 3. Настройка платёжной системы
 - Зарегистрироваться в [ЮKassa](https://yookassa.ru/)
 - Настроить webhook
 - Обновить `.env`
