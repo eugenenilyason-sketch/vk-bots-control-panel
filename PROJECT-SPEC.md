@@ -697,16 +697,24 @@ openssl rand -hex 32  # N8N_JWT_SECRET
 
 ## 📚 Документация
 
-### Необходимые документы
+### Реализованные документы
 
-1. `README.md` — Быстрый старт
-2. `docs/API.md` — API документация (OpenAPI/Swagger)
-3. `docs/DEPLOYMENT.md` — Инструкция по деплою
-4. `docs/DEVELOPMENT.md` — Гайд для разработчиков
-5. `docs/ADMIN.md` — Руководство администратора
-6. `docs/USER.md` — Руководство пользователя
-7. `docs/N8N_WORKFLOWS.md` — Описание workflow n8n
-8. `docs/DATABASE.md` — Схема базы данных
+1. ✅ `README.md` — Быстрый старт
+2. ✅ `docs/API.md` — API документация
+3. ✅ `docs/DEPLOYMENT.md` — Инструкция по деплою
+4. ✅ `docs/NPM-SETUP.md` — Настройка Nginx Proxy Manager (одиночный)
+5. ✅ `docs/NPM-CHAIN-SETUP.md` — Настройка цепочки NPM (Edge + Dev)
+6. ✅ `docs/YOOMONEY-P2P.md` — Интеграция ЮMoney P2P
+7. ✅ `docs/QUICKSTART.md` — Быстрый старт
+8. ✅ `docs/TEST-RUN-REPORT.md` — Отчёт о тестировании
+
+### Планируются
+
+9. `docs/DEVELOPMENT.md` — Гайд для разработчиков
+10. `docs/ADMIN.md` — Руководство администратора
+11. `docs/USER.md` — Руководство пользователя
+12. `docs/N8N_WORKFLOWS.md` — Описание workflow n8n
+13. `docs/DATABASE.md` — Схема базы данных
 
 ---
 
@@ -732,4 +740,6 @@ openssl rand -hex 32  # N8N_JWT_SECRET
 ---
 
 *Документ создан: 28 марта 2026 г.*  
-*Версия спецификации: 1.0*
+*Последнее обновление: 29 марта 2026 г.*  
+*Версия спецификации: 1.1.0*  
+*Статус: ✅ Реализовано (Docker изоляция, Backend API, Frontend UI)*
