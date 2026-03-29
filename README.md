@@ -8,14 +8,16 @@
 
 ### 1. Настройка Nginx Proxy Manager
 
-Смотрите подробную инструкцию: [docs/NPM-SETUP.md](docs/NPM-SETUP.md)
+**Выберите вариант развёртывания**:
 
-**Кратко**:
-1. Откройте NPM: `http://your-server-ip:81`
-2. Добавьте Proxy Host для вашего домена
-3. Forward Host: `frontend`, Port: `3000`
-4. В Advanced вставьте конфигурацию из `nginx/app.conf`
-5. Включите SSL
+| Вариант | Архитектура | Сложность | Когда использовать |
+|---------|-------------|-----------|-------------------|
+| **Одиночный NPM** | Internet → NPM → Сайт | ⭐ Простой | Для большинства проектов |
+| **Цепочка NPM** | Internet → NPM (Edge) → NPM (Dev) → Сайт | ⭐⭐⭐ Сложный | Для DMZ, дополнительной безопасности |
+
+📖 **Подробные инструкции**:
+- [Одиночный NPM](docs/NPM-SETUP.md) — рекомендуется для начала
+- [Цепочка NPM](docs/NPM-CHAIN-SETUP.md) — для сложных сетевых конфигураций
 
 ### 2. Клонирование и настройка
 
@@ -46,7 +48,6 @@ YOOMONEY_API_KEY=your_api_key
 - [🗺️ Roadmap](ROADMAP.md)
 - [📝 Changelog](CHANGELOG.md)
 - [⚙️ Настройка Nginx Proxy Manager](docs/NPM-SETUP.md)
-- [📤 Загрузка на GitHub](docs/GITHUB-UPLOAD.md)
 
 ## 🛠 Технологический стек
 
