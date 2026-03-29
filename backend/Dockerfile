@@ -1,13 +1,15 @@
 # Backend Dockerfile - VK Neuro-Agents API
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
+# Install system dependencies
+RUN apk add --no-cache openssl
+
 # Copy package files
 COPY package*.json ./
-COPY prisma ./prisma/
 
-# Install all dependencies (including dev)
+# Install all dependencies (including dev for tsx)
 RUN npm ci
 
 # Copy source code
@@ -15,25 +17,6 @@ COPY . .
 
 # Generate Prisma client
 RUN npx prisma generate
-
-# Build TypeScript
-RUN npm run build
-
-# Production stage
-FROM node:20-alpine
-
-WORKDIR /app
-
-# Install production dependencies only
-COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
-
-# Copy Prisma schema and generate client
-COPY prisma ./prisma/
-RUN npx prisma generate
-
-# Copy built application
-COPY --from=builder /app/dist ./dist
 
 # Create logs directory
 RUN mkdir -p logs
@@ -47,5 +30,5 @@ EXPOSE 4000
 # Set NODE_ENV
 ENV NODE_ENV=production
 
-# Start application
-CMD ["node", "dist/index.js"]
+# Start application with tsx
+CMD ["npx", "tsx", "src/index.ts"]
