@@ -186,7 +186,7 @@ WARN: The "OK_CLIENT_ID" variable is not set
 
 ```bash
 # Docker сервисы
-docker compose up -d nginx-proxy-manager supabase n8n nocodb redis
+docker compose up -d supabase n8n nocodb redis
 
 # Backend
 cd backend
@@ -203,7 +203,7 @@ node server.js
 |--------|-----|
 | Frontend | http://localhost:3000 |
 | Backend API | http://localhost:4000 |
-| Nginx Proxy Manager | http://localhost:81 |
+
 | NocoDB | http://localhost:8080 |
 | n8n | http://localhost:5678 |
 | PostgreSQL | localhost:5432 |
@@ -218,7 +218,6 @@ node server.js
    - Создайте приложение в VK Developers
    - Обновите `VK_CLIENT_ID` и `VK_CLIENT_SECRET` в `.env`
 
-2. **Настройте Nginx Proxy Manager**:
    - Добавьте домен
    - Получите SSL сертификат
    - Настройте proxy rules

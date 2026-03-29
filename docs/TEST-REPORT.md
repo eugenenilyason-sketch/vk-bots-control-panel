@@ -59,7 +59,7 @@ analytics, api_keys, system_logs, settings
 
 | Сервис | Статус | Порт |
 |--------|--------|------|
-| Nginx Proxy Manager | ✅ Running | 80, 81, 443 |
+
 | Supabase (PostgreSQL) | ✅ Running (healthy) | 5432 |
 | n8n | ✅ Running | 5678 |
 | NocoDB | ✅ Running | 8080 |
@@ -189,7 +189,7 @@ npm run dev
 
 ### Docker инфраструктура
 ```bash
-docker compose up -d nginx-proxy-manager n8n nocodb supabase redis
+docker compose up -d n8n nocodb supabase redis
 ```
 
 ---

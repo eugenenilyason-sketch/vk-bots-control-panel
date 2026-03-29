@@ -88,7 +88,6 @@
 ### 4. Docker инфраструктура - 95%
 
 **Запущенные сервисы**:
-- ✅ Nginx Proxy Manager (порты 80, 81, 443)
 - ✅ Supabase PostgreSQL (порт 5432, healthy)
 - ✅ n8n (порт 5678)
 - ✅ NocoDB (порт 8080)
@@ -148,7 +147,7 @@ node server.js
 
 ### Docker инфраструктура
 ```bash
-docker compose up -d nginx-proxy-manager n8n nocodb supabase redis
+docker compose up -d n8n nocodb supabase redis
 ```
 
 ---
@@ -215,7 +214,6 @@ docker exec supabase psql -U postgres -d vk_bot -c "\dt"
    - Обновить `.env`
 
 3. **Настроить домены и SSL**:
-   - Настроить домены в Nginx Proxy Manager
    - Получить SSL сертификаты Let's Encrypt
 
 4. **Создать workflow в n8n**:

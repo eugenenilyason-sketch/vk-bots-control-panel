@@ -80,7 +80,7 @@ VITE.VK_REDIRECT_URI=http://localhost:3000/login
 
 ```bash
 # Запуск базовых сервисов
-docker compose up -d nginx-proxy-manager n8n nocodb supabase redis watchtower
+docker compose up -d n8n nocodb supabase redis watchtower
 ```
 
 ### 3.2 Проверка статуса
@@ -90,7 +90,6 @@ docker compose ps
 ```
 
 Должны быть запущены:
-- ✅ npm (Nginx Proxy Manager)
 - ✅ n8n
 - ✅ nocodb
 - ✅ supabase (PostgreSQL)
