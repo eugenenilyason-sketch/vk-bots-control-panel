@@ -1,5 +1,5 @@
 services:
-  # Frontend (React/Static)
+  # Frontend (React/Static) с SSL
   frontend:
     build:
       context: ./frontend
@@ -7,7 +7,7 @@ services:
     container_name: vk-frontend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "443:443"
     environment:
       - NODE_ENV=production
     depends_on:
