@@ -1,8 +1,8 @@
 # 🤖 VK Neuro-Agents Control Panel
 
-Система управления нейро-агентами ВКонтакте с интеграцией n8n и NocoDB.
+Система управления нейро-агентами ВКонтакте с полной SSL защитой.
 
-**🎯 Полная Docker изоляция**
+**🔐 Полная SSL изоляция: HTTPS + PostgreSQL SSL**
 
 ## 🚀 Быстрый старт
 
@@ -20,16 +20,12 @@ docker compose logs -f
 ```
 
 **Доступ к сервисам**:
-- Frontend: http://localhost:3000
+- Frontend: https://localhost:443 (HTTPS)
 
 **Внутренние сервисы** (не доступны наружу):
 - Backend API: только внутри Docker сети
-- PostgreSQL: только внутри Docker сети
+- PostgreSQL: только внутри Docker сети (с SSL)
 - Redis: только внутри Docker сети
-
-**Внешние сервисы** (работают отдельно):
-- n8n: automation workflow
-- NocoDB: админ-панель БД
 
 ---
 
@@ -52,6 +48,34 @@ VK_REDIRECT_URI=https://yourdomain.com
 YOOMONEY_ACCOUNT_NUMBER=your_account
 YOOMONEY_API_KEY=your_api_key
 ```
+
+## 🔐 SSL защита
+
+Проект полностью защищён SSL шифрованием:
+
+### Frontend (HTTPS)
+- ✅ TLSv1.2 / TLSv1.3
+- ✅ Strong cipher suites
+- ✅ Security headers (HSTS, X-Frame-Options)
+- ✅ Порт 443
+
+### Backend (PostgreSQL SSL)
+- ✅ SSL шифрование соединений
+- ✅ TLSv1.2 минимум
+- ✅ Сертификаты в `supabase/ssl/`
+
+### Let's Encrypt (для production)
+```bash
+# Получение сертификата
+./scripts/get-letsencrypt-cert.sh yourdomain.com email@example.com
+
+# Автоматическое обновление
+crontab scripts/letsencrypt-crontab
+```
+
+📖 **Подробная документация**: [docs/LETSENCRYPT-SSL.md](docs/LETSENCRYPT-SSL.md)
+
+---
 
 ## 📚 Документация
 
@@ -81,11 +105,13 @@ YOOMONEY_API_KEY=your_api_key
 - **State**: Zustand
 - **Data Fetching**: TanStack Query (React Query)
 - **Routing**: React Router v6
+- **Server**: Nginx с HTTPS/SSL
 
 ### DevOps
 - **Container**: Docker + Docker Compose
-- **Database**: PostgreSQL (Supabase)
+- **Database**: PostgreSQL (Supabase) с SSL
 - **Cache**: Redis
+- **Frontend**: Nginx с HTTPS
 - **Monitoring**: Watchtower
 
 ## 📋 Требования

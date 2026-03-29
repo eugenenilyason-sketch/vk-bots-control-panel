@@ -4,157 +4,71 @@
 
 ---
 
-## [1.1.0] — 28 марта 2026
+## [1.2.0] — 29 марта 2026
 
 ### Добавлено
 
-#### 💳 Платёжная система ЮMoney P2P
+#### 🔐 SSL шифрование Frontend
 
 **Новые возможности**:
-- ✅ Приём платежей через переводы на счёт физлица в ЮMoney
-- ✅ Подключение проверенных пользователей (физлица)
-- ✅ Автоматическая обработка webhook от ЮMoney
-- ✅ Инструкции для пользователей по переводу
+- ✅ Nginx с HTTPS поддержкой (порт 443)
+- ✅ TLSv1.2 / TLSv1.3 протоколы
+- ✅ Strong cipher suites (ECDHE/DHE)
+- ✅ Security headers (HSTS, X-Frame-Options, X-XSS-Protection)
+- ✅ Gzip сжатие
+- ✅ HTTP/2 поддержка
 
-**Для администраторов**:
-- ✅ Включение/выключение методов оплаты (ЮKassa, ЮMoney P2P, Карты)
-- ✅ Настройка лимитов и комиссий для каждого метода
-- ✅ Добавление проверенных пользователей ЮMoney
-- ✅ Управление статусом проверенных пользователей
-- ✅ Мониторинг поступлений от ЮMoney P2P
+**Файлы**:
+- `frontend/Dockerfile` — обновлён с SSL поддержкой
+- `frontend/nginx-ssl.conf` — SSL конфигурация Nginx
+- `frontend/ssl/` — SSL сертификаты
 
-**Для пользователей**:
-- ✅ Выбор метода оплаты при пополнении баланса
-- ✅ Пошаговые инструкции для P2P перевода
-- ✅ Отображение доступных методов (настраивается админом)
+#### 🔐 SSL шифрование PostgreSQL
 
-#### 📋 База данных
+**Новые возможности**:
+- ✅ SSL шифрование соединений
+- ✅ TLSv1.2 минимум
+- ✅ Strong ciphers
+- ✅ Сертификаты в `supabase/ssl/`
 
-**Новые таблицы**:
-- `payment_methods` — методы оплаты (статус, настройки, лимиты)
-- `yoomoney_p2p` — настройки ЮMoney P2P (проверенные пользователи, счета)
+**Файлы**:
+- `supabase/Dockerfile` — кастомный образ с SSL
+- `supabase/ssl-init.sh` — скрипт инициализации SSL
+- `scripts/generate-ssl-certs.sh` — генерация сертификатов
 
-**Обновления**:
-- ✅ Seed данные для платёжных методов (3 метода по умолчанию)
-- ✅ Триггеры auto-update для новых таблиц
-- ✅ Индексы для оптимизации запросов
+#### 🔐 Let's Encrypt интеграция
 
-#### 🔌 API
+**Новые возможности**:
+- ✅ Автоматическое получение сертификатов
+- ✅ Webroot validation
+- ✅ Автообновление каждые 90 дней
+- ✅ Cron конфигурация
 
-**Новые endpoints**:
-
-**User**:
-- `GET /api/payments/methods` — список доступных методов оплаты
-- `POST /api/user/payments/create` — создание платежа (поддержка ЮMoney P2P)
-
-**Admin**:
-- `GET /api/admin/payment-methods` — список методов оплаты
-- `PUT /api/admin/payment-methods/:id` — обновление метода (вкл/выкл)
-- `GET /api/admin/yoomoney-p2p` — список проверенных пользователей
-- `POST /api/admin/yoomoney-p2p` — добавление проверенного пользователя
-- `PUT /api/admin/yoomoney-p2p/:id` — обновление проверенного пользователя
-
-**Webhooks**:
-- `POST /webhook/yoomoney` — webhook от ЮMoney P2P
-
-#### 📚 Документация
-
-**Новые документы**:
-- ✅ `docs/YOOMONEY-P2P.md` — полное руководство по интеграции ЮMoney P2P
-- ✅ Обновлён `docs/API.md` — новые endpoints для платёжных методов
-- ✅ Обновлён `PROJECT-SPEC.md` — спецификация платёжных методов
-- ✅ Обновлён `ROADMAP.md` — задачи по ЮMoney интеграции
-
-#### 🔧 Конфигурация
-
-**Docker Compose**:
-- ✅ Новые переменные окружения для ЮMoney
-- ✅ Флаги включения/выключения методов оплаты
-
-**.env.example**:
-```env
-# YooMoney P2P
-YOOMONEY_ACCOUNT_NUMBER=your_yoomoney_account_number
-YOOMONEY_API_KEY=your_yoomoney_api_key
-YOOMONEY_WEBHOOK_URL=https://yourdomain.com/webhook/yoomoney
-YOOMONEY_VERIFIED_USER_VK_ID=verified_user_vk_id_for_p2p
-
-# Payment Methods
-PAYMENT_METHOD_YOOKASSA_ENABLED=true
-PAYMENT_METHOD_YOOMONEY_P2P_ENABLED=false
-PAYMENT_METHOD_CARDS_ENABLED=true
-```
+**Файлы**:
+- `scripts/get-letsencrypt-cert.sh` — получение сертификата
+- `scripts/renew-letsencrypt-cert.sh` — обновление
+- `scripts/letsencrypt-crontab` — cron задача
+- `docs/LETSENCRYPT-SSL.md` — документация
 
 ---
+
+## [1.1.0] — 29 марта 2026
 
 ### Изменено
 
-#### Обновлённые файлы
+#### 🧹 Удаление n8n и NocoDB
 
-| Файл | Изменения |
-|------|-----------|
-| `PROJECT-SPEC.md` | Добавлены платёжные методы, ЮMoney P2P таблицы |
-| `docs/API.md` | Новые endpoints для оплаты и админ-панели |
-| `ROADMAP.md` | Задачи по ЮMoney интеграции в Phase 2 и 4 |
-| `SUMMARY.md` | Обновлена информация о платёжных методах |
-| `.env.example` | Переменные для ЮMoney и платёжных методов |
-| `docker-compose.yml` | Новые environment переменные для backend |
-| `supabase/migrations/001_initial_schema.sql` | Таблицы payment_methods, yoomoney_p2p |
+**Удалено из проекта**:
+- ❌ Сервис n8n (будет использоваться отдельно)
+- ❌ Сервис NocoDB (будет использоваться отдельно)
+- ❌ N8N_* и NOCODB_* переменные окружения
+- ❌ Упоминания в документации
 
----
-
-### Технические детали
-
-#### Архитектура ЮMoney P2P
-
-```
-Пользователь → Создает платёж → Получает инструкцию
-                                       ↓
-                            Переводит на счёт ЮMoney
-                                       ↓
-                            ЮMoney Webhook → Система
-                                       ↓
-                            Проверка платежа → Зачисление
-```
-
-#### Безопасность
-
-- ✅ API ключи ЮMoney хранятся в хэшированном виде
-- ✅ Проверка подписи webhook
-- ✅ Верификация пользователя через VK ID
-- ✅ Лимиты на переводы (настраиваются админом)
-- ✅ Логгирование всех операций
-
-#### Лимиты по умолчанию
-
-| Метод | Мин. сумма | Макс. сумма | Комиссия |
-|-------|-----------|------------|----------|
-| ЮKassa | 100₽ | 100,000₽ | 2.8% |
-| ЮMoney P2P | 100₽ | 50,000₽ | 0% |
-| Карты | 100₽ | 100,000₽ | 2.5% |
-
----
-
-### 🎯 Следующие шаги
-
-1. **Настройка ЮMoney**:
-   - Зарегистрировать счёт в ЮMoney
-   - Получить API ключ
-   - Настроить webhook
-
-2. **Подключение проверенного пользователя**:
-   - Выбрать доверенное лицо
-   - Добавить в систему через админ-панель
-   - Протестировать перевод
-
-3. **Включение метода оплаты**:
-   - Админ включает ЮMoney P2P в настройках
-   - Пользователи видят метод при оплате
-
-4. **Мониторинг**:
-   - Проверка поступлений
-   - Отслеживание webhook
-   - Анализ статистики
+**Осталось в проекте**:
+- ✅ Frontend (React)
+- ✅ Backend (Node.js)
+- ✅ Database (PostgreSQL/Supabase)
+- ✅ Cache (Redis)
 
 ---
 
@@ -168,17 +82,15 @@ PAYMENT_METHOD_CARDS_ENABLED=true
 - ✅ Docker Compose конфигурация (7 сервисов)
 - ✅ SQL миграции (5 таблиц)
 - ✅ Скрипты (init, backup, deploy, start-docker)
-- ✅ Документация (README, API, DEPLOYMENT, YOOMONEY-P2P, QUICKSTART)
+- ✅ Документация (README, API, DEPLOYMENT, YOOMONEY-P2P)
 
 #### 🛠 Технологический стек
 
 - **Frontend**: React 18 + TypeScript + TailwindCSS
-- **Backend**: Node.js + Express/Fastify
+- **Backend**: Node.js + Express
 - **Database**: PostgreSQL (Supabase)
-- **Automation**: n8n
-- **Admin Panel**: NocoDB
-- **Auth**: OAuth 2.0 (VK)
-- **Payments**: ЮKassa
+- **Cache**: Redis
+- **DevOps**: Docker + Docker Compose
 
 #### 📋 Функциональность
 
