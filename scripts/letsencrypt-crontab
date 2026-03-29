@@ -1,0 +1,17 @@
+# Crontab для автоматического обновления SSL сертификата Let's Encrypt
+# 
+# Установка crontab:
+#   crontab /home/vidserv/web-vk-bot/scripts/letsencrypt-crontab
+#
+# Проверка crontab:
+#   crontab -l
+#
+# Удаление crontab:
+#   crontab -r
+
+# Обновление сертификата каждый день в 3:00
+# Certbot автоматически проверяет необходимость обновления
+0 3 * * * /home/vidserv/web-vk-bot/scripts/renew-letsencrypt-cert.sh yourdomain.com >> /var/log/letsencrypt-renew.log 2>&1
+
+# Альтернативно: использование системного certbot renew
+# 0 0 1 * * certbot renew --quiet && docker restart supabase
