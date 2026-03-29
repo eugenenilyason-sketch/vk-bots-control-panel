@@ -21,13 +21,15 @@ docker compose logs -f
 
 **Доступ к сервисам**:
 - Frontend: http://localhost:3000
-- n8n: http://localhost:5678
-- NocoDB: http://localhost:8080
 
 **Внутренние сервисы** (не доступны наружу):
 - Backend API: только внутри Docker сети
 - PostgreSQL: только внутри Docker сети
 - Redis: только внутри Docker сети
+
+**Внешние сервисы** (работают отдельно):
+- n8n: automation workflow
+- NocoDB: админ-панель БД
 
 ---
 
@@ -82,8 +84,8 @@ YOOMONEY_API_KEY=your_api_key
 
 ### DevOps
 - **Container**: Docker + Docker Compose
-- **Automation**: n8n
-- **Admin Panel**: NocoDB
+- **Database**: PostgreSQL (Supabase)
+- **Cache**: Redis
 - **Monitoring**: Watchtower
 
 ## 📋 Требования

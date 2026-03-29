@@ -39,10 +39,6 @@ services:
       - YOOMONEY_ACCOUNT_NUMBER=${YOOMONEY_ACCOUNT_NUMBER:-}
       - YOOMONEY_API_KEY=${YOOMONEY_API_KEY:-}
       - YOOMONEY_WEBHOOK_URL=${YOOMONEY_WEBHOOK_URL:-}
-      - N8N_API_URL=http://n8n:5678
-      - N8N_API_KEY=${N8N_API_KEY:-}
-      - NOCODB_API_URL=http://nocodb:8080
-      - NOCODB_API_KEY=${NOCODB_API_KEY:-}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - FRONTEND_URL=http://frontend:3000
     volumes:
@@ -52,54 +48,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    networks:
-      - vk-bot-network
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-
-  # n8n Automation
-  n8n:
-    image: docker.n8n.io/n8nio/n8n:latest
-    container_name: n8n
-    restart: unless-stopped
-    ports:
-      - "5678:5678"
-    environment:
-      - N8N_HOST=${N8N_HOST:-localhost}
-      - N8N_PORT=5678
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-admin}
-      - N8N_JWT_SECRET=${N8N_JWT_SECRET}
-      # Используем SQLite вместо PostgreSQL для избежания конфликтов
-      - DB_TYPE=sqlite
-      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
-    volumes:
-      - ./n8n/data:/home/node/.n8n
-      - ./n8n/workflows:/home/node/.n8n/workflows
-    networks:
-      - vk-bot-network
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-
-  # NocoDB
-  nocodb:
-    image: nocodb/nocodb:latest
-    container_name: nocodb
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
-    environment:
-      - NC_DB=pg://supabase:5432?u=postgres&p=${POSTGRES_PASSWORD}&d=vk_bot
-      - NC_AUTH_JWT_SECRET=${NC_JWT_SECRET}
-      - NC_PUBLIC_URL=${NC_PUBLIC_URL:-http://localhost:8080}
-      # Разрешить подключение к внутренним Docker хостам
-      - NC_CONNECT_TO_INTERNAL_DB=true
-    volumes:
-      - ./nocodb/data:/usr/app/data
-    depends_on:
-      supabase:
-        condition: service_healthy
     networks:
       - vk-bot-network
     labels:
