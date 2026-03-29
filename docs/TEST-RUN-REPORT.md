@@ -11,7 +11,6 @@
 
 | Сервис | Статус | Порт | Статус здоровья |
 |--------|--------|------|-----------------|
-| **nginx-proxy-manager** | ✅ Running | 80, 81, 443 | Up 9 minutes |
 | **supabase (PostgreSQL)** | ✅ Running | 5432 | healthy |
 | **n8n** | ✅ Running | 5678 | Up |
 | **nocodb** | ✅ Running | 8080 | Up |
@@ -130,7 +129,6 @@ node server.js
 
 | Сервис | Запуск | Health Check |
 |--------|--------|--------------|
-| nginx-proxy-manager | ✅ | ✅ |
 | supabase | ✅ | ✅ healthy |
 | n8n | ✅ | ✅ |
 | nocodb | ✅ | ✅ |

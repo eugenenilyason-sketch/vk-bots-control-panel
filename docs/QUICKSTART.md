@@ -213,7 +213,6 @@ curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:4000/api/auth/me
 
 ## Шаг 7: Настройка админ-панелей
 
-### 7.1 Nginx Proxy Manager
 
 1. Откройте http://localhost:81
 2. Логин: `admin@example.com`

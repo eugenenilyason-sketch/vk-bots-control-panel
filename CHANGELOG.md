@@ -177,7 +177,6 @@ PAYMENT_METHOD_CARDS_ENABLED=true
 - **Database**: PostgreSQL (Supabase)
 - **Automation**: n8n
 - **Admin Panel**: NocoDB
-- **Proxy**: Nginx Proxy Manager
 - **Auth**: OAuth 2.0 (VK)
 - **Payments**: ЮKassa
 

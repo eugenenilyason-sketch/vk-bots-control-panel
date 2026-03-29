@@ -55,7 +55,6 @@ YOOMONEY_API_KEY=your_api_key
 - [💳 ЮMoney P2P интеграция](docs/YOOMONEY-P2P.md)
 - [🗺️ Roadmap](ROADMAP.md)
 - [📝 Changelog](CHANGELOG.md)
-- [⚙️ Настройка Nginx Proxy Manager](docs/NPM-SETUP.md)
 
 ## 🛠 Технологический стек
 
