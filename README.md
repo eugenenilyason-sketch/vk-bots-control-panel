@@ -21,9 +21,13 @@ docker compose logs -f
 
 **Доступ к сервисам**:
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:4000
 - n8n: http://localhost:5678
 - NocoDB: http://localhost:8080
+
+**Внутренние сервисы** (не доступны наружу):
+- Backend API: только внутри Docker сети
+- PostgreSQL: только внутри Docker сети
+- Redis: только внутри Docker сети
 
 ---
 

@@ -69,15 +69,15 @@
 
 ## 📊 Docker сервисы
 
-| Сервис | Образ | Порт | Назначение |
-|--------|-------|------|------------|
-| `frontend` | Custom (React) | 3000 | Frontend приложение |
-| `backend` | Custom (Node.js) | 4000 | REST API сервер |
-| `n8n` | n8n/n8n | 5678 | Workflow автоматизация |
-| `nocodb` | nocodb/nocodb | 8080 | No-code админ панель |
-| `supabase` | supabase/postgres | 5432 | PostgreSQL база данных |
-| `redis` | redis:7-alpine | 6379 | Кэширование, сессии |
-| `watchtower` | containrrr/watchtower | - | Авто-обновление контейнеров |
+| Сервис | Образ | Порт | Доступ | Назначение |
+|--------|-------|------|--------|------------|
+| `frontend` | Custom (React) | 3000 | 🔓 Наружу | Frontend приложение |
+| `n8n` | n8n/n8n | 5678 | 🔓 Наружу | Workflow автоматизация |
+| `nocodb` | nocodb/nocodb | 8080 | 🔓 Наружу | No-code админ панель |
+| `backend` | Custom (Node.js) | 4000 | 🔒 Внутри | REST API сервер |
+| `supabase` | supabase/postgres | 5432 | 🔒 Внутри | PostgreSQL база данных |
+| `redis` | redis:7-alpine | 6379 | 🔒 Внутри | Кэширование, сессии |
+| `watchtower` | containrrr/watchtower | - | - | Авто-обновление контейнеров |
 
 ---
 
