@@ -29,7 +29,7 @@ sudo yum install -y certbot
 ### 2. Получение сертификата
 
 ```bash
-cd /home/vidserv/web-vk-bot
+cd project-root
 
 # Запуск скрипта
 ./scripts/get-letsencrypt-cert.sh yourdomain.com email@example.com
@@ -102,7 +102,7 @@ mkdir -p /var/www/letsencrypt
 
 ```bash
 # Установка crontab
-crontab /home/vidserv/web-vk-bot/scripts/letsencrypt-crontab
+crontab scripts/scripts/letsencrypt-crontab
 
 # Проверка
 crontab -l
