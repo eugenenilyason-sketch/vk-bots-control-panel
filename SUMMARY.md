@@ -27,70 +27,11 @@
 ### База данных
 | Файл | Описание |
 |------|----------|
-| `supabase/migrations/001_initial_schema.sql` | SQL миграция (13 таблиц, триггеры, seed data) |
-
-### MCP и Skills конфигурация
-| Файл | Описание |
-|------|----------|
-| `.qwen/mcp.json` | **10 MCP серверов** для разработки |
-| `.qwen/skills.json` | **18 skills + 6 ролей** для проекта |
+| `supabase/migrations/000_init.sql` | SQL миграция (5 таблиц, seed data) |
 
 ---
 
-## 🛠 Установленные MCP серверы
-
-| MCP Server | Статус | Назначение |
-|------------|--------|------------|
-| `filesystem` | ✅ | Работа с файлами проекта |
-| `git` | ✅ | Git version control |
-| `fetch` | ✅ | HTTP запросы к API (VK, OAuth, ЮKassa) |
-| `sequential-thinking` | ✅ | Планирование сложных задач |
-| `memory` | ✅ | Долговременная память проекта |
-| `postgresql` | ✅ | Прямой доступ к PostgreSQL (Supabase) |
-| `playwright` | ✅ | E2E тестирование frontend |
-| `docker` | ✅ | Управление Docker контейнерами |
-| `github` | ⏸️ | GitHub API (опционально) |
-| `puppeteer` | ⏸️ | Browser автоматизация (опционально) |
-
----
-
-## ⚡ Установленные Skills
-
-### Development Skills
-- ✅ `review` — Ревью кода
-- ✅ `docker` — Docker контейнеризация
-- ✅ `nodejs-backend` — Node.js backend
-- ✅ `react-frontend` — React frontend
-- ✅ `database-design` — PostgreSQL проектирование
-- ✅ `tailwindcss` — TailwindCSS стилизация
-- ✅ `material-ui` — Material-UI / Ant Design
-- ✅ `api-design` — REST API дизайн
-
-### Integration Skills
-- ✅ `oauth-auth` — OAuth 2.0 (VK)
-- ✅ `payment-integration` — ЮKassa, CloudPayments
-- ✅ `vk-api` — VK Bot API
-- ✅ `n8n-workflows` — n8n automation
-- ✅ `nocodb-setup` — NocoDB настройка
-- ✅ `supabase` — Supabase PostgreSQL
-
-### DevOps & Security Skills
-- ✅ `security-hardening` — Безопасность
-- ✅ `performance-opt` — Оптимизация
-- ✅ `nginx-proxy` — Nginx Proxy Manager
-- ✅ `pwa-mobile` — PWA для Android
-
-### Роли
-1. **Solution Architect** — Архитектура системы
-2. **Full-Stack Developer** — Frontend + Backend
-3. **DevOps Engineer** — Инфраструктура и деплой
-4. **Frontend UI/UX Designer** — Дизайн (Stable Diffusion × 3x-ui)
-5. **Automation Engineer (n8n)** — Workflow автоматизация
-6. **QA Engineer** — Тестирование
-
----
-
-## 🏗 Архитектура проекта
+## 🛠 Установленные сервисы
 
 ```
 ┌─────────────────────────────────────────────────────────┐

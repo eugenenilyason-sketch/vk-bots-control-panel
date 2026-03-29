@@ -166,11 +166,9 @@ PAYMENT_METHOD_CARDS_ENABLED=true
 
 - ✅ Полная спецификация проекта (PROJECT-SPEC.md)
 - ✅ Docker Compose конфигурация (8 сервисов)
-- ✅ MCP серверы (10 шт)
-- ✅ Skills (18 шт + 6 ролей)
-- ✅ SQL миграции (15 таблиц)
-- ✅ Скрипты (init, backup, deploy)
-- ✅ Документация (README, API, DEPLOYMENT, ROADMAP)
+- ✅ SQL миграции (5 таблиц)
+- ✅ Скрипты (init, backup, deploy, start-docker)
+- ✅ Документация (README, API, DEPLOYMENT, ROADMAP, NPM-SETUP, YOOMONEY-P2P)
 
 #### 🛠 Технологический стек
 

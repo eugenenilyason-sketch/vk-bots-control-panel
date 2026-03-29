@@ -11,7 +11,7 @@
 
 | Файл | Изменения |
 |------|-----------|
-| `PROJECT-SPEC.md` | Удалена OK OAuth из спецификации, skills, docker-compose, API endpoints |
+| `PROJECT-SPEC.md` | Удалена OK OAuth из спецификации, docker-compose, API endpoints |
 | `.env.example` | Удалены переменные `OK_CLIENT_ID`, `OK_CLIENT_SECRET`, `OK_REDIRECT_URI` |
 | `.env` | Удалены переменные OK OAuth |
 | `docs/API.md` | Удалён endpoint `POST /api/auth/ok` |
@@ -20,7 +20,6 @@
 | `SUMMARY.md` | Удалены упоминания OK |
 | `README.md` | Обновлена информация об Auth |
 | `CHANGELOG.md` | Обновлена информация об Auth |
-| `.qwen/skills.json` | Удалена OK OAuth из описания skills и roles |
 
 ---
 
@@ -121,7 +120,6 @@ POST   /api/auth/refresh     - Refresh token
 - [x] Удалены упоминания OK из документации
 - [x] Удалены переменные окружения
 - [x] Удалены API endpoints
-- [x] Обновлены skills и roles
 - [x] Сервисы перезапущены
 
 ---
