@@ -9,8 +9,6 @@
 ### 🐳 Запуск в Docker (рекомендуется)
 
 ```bash
-cd /home/vidserv/web-vk-bot
-
 # Запуск проекта
 ./scripts/start-docker.sh
 

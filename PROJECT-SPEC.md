@@ -8,14 +8,12 @@
 1. [Обзор проекта](#-обзор-проекта)
 2. [Технологический стек](#-технологический-стек)
 3. [Архитектура системы](#-архитектура-системы)
-4. [MCP Servers конфигурация](#-mcp-servers-конфигурация)
-5. [Skills конфигурация](#-skills-конфигурация)
-6. [Функциональные требования](#-функциональные-требования)
-7. [Структура проекта](#-структура-проекта)
-8. [Docker Compose конфигурация](#-docker-compose-конфигурация)
-9. [API спецификация](#-api-спецификация)
-10. [Безопасность](#-безопасность)
-11. [Дорожная карта](#-дорожная-карта)
+4. [Функциональные требования](#-функциональные-требования)
+5. [Структура проекта](#-структура-проекта)
+6. [Docker Compose конфигурация](#-docker-compose-конфигурация)
+7. [API спецификация](#-api-спецификация)
+8. [Безопасность](#-безопасность)
+9. [Дорожная карта](#-дорожная-карта)
 
 ---
 
@@ -99,95 +97,6 @@
 
 ---
 
-## 🔌 MCP Servers конфигурация
-
-### Рекомендуемые MCP серверы для проекта
-
-```json
-{
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/vidserv/web-vk-bot"],
-      "description": "Работа с файловой системой проекта",
-      "disabled": false
-    },
-    "git": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git"],
-      "description": "Git version control",
-      "disabled": false
-    },
-    "fetch": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"],
-      "description": "HTTP запросы к API (VK, OAuth, платежи)",
-      "disabled": false
-    },
-    "sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "description": "Планирование сложных задач",
-      "disabled": false
-    },
-    "memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "description": "Долговременная память проекта",
-      "disabled": false
-    },
-    "postgresql": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgresql"],
-      "description": "Прямой доступ к PostgreSQL (Supabase)",
-      "disabled": false
-    },
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-playwright"],
-      "description": "E2E тестирование и скрапинг",
-      "disabled": false
-    },
-    "puppeteer": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
-      "description": "Browser автоматизация",
-      "disabled": false
-    },
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "description": "GitHub API integration",
-      "disabled": false
-    },
-    "docker": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-docker"],
-      "description": "Docker контейнеры управление",
-      "disabled": false
-    }
-  }
-}
-```
-
-### Описание MCP серверов
-
-| MCP Server | Назначение | Приоритет |
-|------------|------------|-----------|
-| **filesystem** | Работа с файлами проекта | 🔴 Критичный |
-| **git** | Version control | 🔴 Критичный |
-| **fetch** | API интеграции (VK, OAuth, ЮKassa) | 🔴 Критичный |
-| **postgresql** | Прямые SQL запросы к Supabase | 🔴 Критичный |
-| **sequential-thinking** | Планирование архитектуры | 🟡 Важный |
-| **memory** | Контекст проекта между сессиями | 🟡 Важный |
-| **playwright** | E2E тесты frontend | 🟡 Важный |
-| **docker** | Управление контейнерами | 🟡 Важный |
-| **github** | CI/CD, releases | 🟢 Опциональный |
-| **puppeteer** | Скрапинг, автоматизация | 🟢 Опциональный |
-
----
-
-## ⚡ Skills конфигурация
 
 ### Рекомендуемые skills для проекта
 
@@ -376,7 +285,7 @@
 ## 📁 Структура проекта
 
 ```
-/home/vidserv/web-vk-bot/
+project-root/
 ├── docker-compose.yml              # Основная Docker Compose конфигурация
 ├── .env                            # Переменные окружения (секреты)
 ├── .env.example                    # Шаблон переменных окружения
@@ -737,7 +646,7 @@ openssl rand -hex 32  # N8N_JWT_SECRET
 - [ ] Docker Compose настройка
 - [ ] Supabase + NocoDB деплой
 - [ ] n8n деплой и базовая настройка
-- [ ] MCP servers установка
+
 
 ### Phase 2: Backend Core (Недели 3-4)
 - [ ] Node.js API сервер

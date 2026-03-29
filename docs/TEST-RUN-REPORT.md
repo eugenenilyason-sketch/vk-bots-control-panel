@@ -179,7 +179,6 @@ WARN: The "OK_CLIENT_ID" variable is not set
 ### Быстрый старт
 
 ```bash
-cd /home/vidserv/web-vk-bot
 ./scripts/start.sh
 ```
 

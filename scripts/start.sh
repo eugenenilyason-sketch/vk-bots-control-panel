@@ -6,7 +6,9 @@ set -e
 echo "🚀 Запуск VK Neuro-Agents Control Panel"
 echo "======================================="
 
-cd /home/vidserv/web-vk-bot
+# Переход в директорию проекта
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/.."
 
 # Создание директории для логов
 mkdir -p logs

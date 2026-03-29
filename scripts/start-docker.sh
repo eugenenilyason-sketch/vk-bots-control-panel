@@ -6,7 +6,9 @@ set -e
 echo "🚀 Запуск VK Neuro-Agents Control Panel (Docker)"
 echo "================================================="
 
-cd /home/vidserv/web-vk-bot
+# Переход в директорию проекта
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/.."
 
 # Проверка Docker
 if ! command -v docker &> /dev/null || ! command -v docker compose &> /dev/null; then
