@@ -15,10 +15,7 @@ const configSchema = z.object({
   YOOKASSA_SECRET_KEY: z.string().optional(),
   YOOMONEY_ACCOUNT_NUMBER: z.string().optional(),
   YOOMONEY_API_KEY: z.string().optional(),
-  N8N_API_URL: z.string().optional(),
-  N8N_API_KEY: z.string().optional(),
-  NOCODB_API_URL: z.string().optional(),
-  NOCODB_API_KEY: z.string().optional(),
+  REDIS_PASSWORD: z.string(),
   FRONTEND_URL: z.string().default('http://localhost:3000'),
 });
 
@@ -43,9 +40,6 @@ export const config: Config = {
   YOOKASSA_SECRET_KEY: process.env.YOOKASSA_SECRET_KEY,
   YOOMONEY_ACCOUNT_NUMBER: process.env.YOOMONEY_ACCOUNT_NUMBER,
   YOOMONEY_API_KEY: process.env.YOOMONEY_API_KEY,
-  N8N_API_URL: process.env.N8N_API_URL,
-  N8N_API_KEY: process.env.N8N_API_KEY,
-  NOCODB_API_URL: process.env.NOCODB_API_URL,
-  NOCODB_API_KEY: process.env.NOCODB_API_KEY,
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD!,
   FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
 };

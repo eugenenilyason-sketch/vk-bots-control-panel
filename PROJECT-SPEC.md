@@ -19,7 +19,7 @@
 
 ## 📖 Обзор проекта
 
-**VK Neuro-Agents Control Panel** — это веб-платформа для управления нейро-агентами в социальной сети ВКонтакте с интеграцией n8n (автоматизация) и NocoDB (база данных).
+**VK Neuro-Agents Control Panel** — это веб-платформа для управления нейро-агентами в социальной сети ВКонтакте.
 
 ### Ключевые возможности
 
@@ -37,8 +37,6 @@
 |-----------|------------|------------|
 | **API Framework** | Node.js + Express / Fastify | REST API сервер |
 | **База данных** | PostgreSQL (Supabase) | Основное хранилище |
-| **No-Code DB** | NocoDB | Админ-панель для данных |
-| **Автоматизация** | n8n | Workflow автоматизация ботов |
 | **Auth** | OAuth 2.0 (VK) | Социальная авторизация |
 | **Payments** | ЮKassa / ЮMoney / CloudPayments | Платёжные шлюзы |
 | **P2P Payments** | ЮMoney (физлица) | Переводы на карту/счёт |
@@ -124,19 +122,6 @@
 | **Профиль** | Настройки аккаунта, API keys, уведомления |
 | **Поддержка** | Тикеты, FAQ, чат |
 
-### n8n Integration
-
-| Workflow | Описание |
-|----------|---------|
-| **VK Bot Handler** | Обработка сообщений от пользователей ВК |
-| **Auto Response** | Автоматические ответы на основе AI |
-| **Payment Webhook** | Обработка webhook от платёжных систем |
-| **User Onboarding** | Онбординг новых пользователей |
-| **Analytics Collector** | Сбор и агрегация статистики |
-| **Notification Sender** | Уведомления (email, Telegram, VK) |
-| **Data Sync** | Синхронизация с NocoDB |
-
-### NocoDB Integration
 
 | Таблица | Описание |
 |---------|---------|
@@ -189,14 +174,8 @@ project-root/
 │   │   │   ├── vk/                 # VK API сервис
 │   │   │   ├── payment/            # Платёжный сервис
 │   │   │   ├── auth/               # Auth сервис (VK)
-│   │   │   └── n8n/                # n8n интеграция
 │   │   └── utils/                  # Утилиты
 │   └── tests/                      # Тесты
-├── n8n/
-│   ├── Dockerfile
-│   ├── workflows/                  # Экспортированные workflow JSON
-│   └── credentials/                # Credentials (encrypted)
-├── nocodb/
 │   └── Dockerfile
 ├── supabase/
 │   ├── migrations/                 # SQL миграции
@@ -254,49 +233,13 @@ services:
       - VK_CLIENT_SECRET=${VK_CLIENT_SECRET}
       - YOOKASSA_SHOP_ID=${YOOKASSA_SHOP_ID}
       - YOOKASSA_SECRET_KEY=${YOOKASSA_SECRET_KEY}
-      - N8N_API_URL=http://n8n:5678
-      - N8N_API_KEY=${N8N_API_KEY}
-      - NOCODB_API_URL=http://nocodb:8080
-      - NOCODB_API_KEY=${NOCODB_API_KEY}
     volumes:
       - ./backend/logs:/app/logs
     depends_on:
       - supabase
-      - n8n
-      - nocodb
     networks:
       - vk-bot-network
 
-  # n8n Automation
-  n8n:
-    image: n8n/n8n:latest
-    container_name: n8n
-    restart: unless-stopped
-    ports:
-      - "5678:5678"
-    environment:
-      - N8N_HOST=${N8N_HOST}
-      - N8N_PORT=5678
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
-      - N8N_JWT_SECRET=${N8N_JWT_SECRET}
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=supabase
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_USER=postgres
-      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_POSTGRESDB_DATABASE=vk_bot
-      - WEBHOOK_URL=https://${N8N_HOST}/
-    volumes:
-      - ./n8n/data:/home/node/.n8n
-      - ./n8n/workflows:/home/node/.n8n/workflows
-    depends_on:
-      - supabase
-    networks:
-      - vk-bot-network
-
-  # NocoDB
   nocodb:
     image: nocodb/nocodb:latest
     container_name: nocodb
@@ -305,8 +248,6 @@ services:
       - "8080:8080"
     environment:
       - NC_DB=pg://supabase:5432?u=postgres&p=${POSTGRES_PASSWORD}&d=vk_bot
-      - NC_AUTH_JWT_SECRET=${NC_JWT_SECRET}
-      - NC_PUBLIC_URL=https://${NOCODB_HOST}
     volumes:
       - ./nocodb/data:/usr/app/data
     depends_on:
@@ -359,7 +300,6 @@ volumes:
 # ============= DATABASE =============
 POSTGRES_PASSWORD=your_super_secure_postgres_password_here
 JWT_SECRET=your_jwt_secret_key_here
-NC_JWT_SECRET=your_nocodb_jwt_secret_here
 
 # ============= VK OAuth =============
 VK_CLIENT_ID=your_vk_client_id
@@ -371,16 +311,6 @@ YOOKASSA_SHOP_ID=your_shop_id
 YOOKASSA_SECRET_KEY=your_secret_key
 YOOKASSA_WEBHOOK_URL=https://yourdomain.com/webhook/yookassa
 
-# ============= N8N =============
-N8N_HOST=n8n.yourdomain.com
-N8N_BASIC_AUTH_USER=admin
-N8N_BASIC_AUTH_PASSWORD=your_n8n_admin_password
-N8N_JWT_SECRET=your_n8n_jwt_secret
-N8N_API_KEY=your_n8n_api_key
-
-# ============= NocoDB =============
-NOCODB_HOST=nocodb.yourdomain.com
-NOCODB_API_KEY=your_nocodb_api_key
 
 # ============= Redis =============
 REDIS_PASSWORD=your_redis_password
@@ -461,7 +391,6 @@ DELETE /api/user/api-keys/:id  - Отзыв ключа
 ```
 POST   /webhook/vk           - VK Bot webhook
 POST   /webhook/yookassa     - YooKassa webhook
-POST   /webhook/n8n/:workflow - n8n workflow webhook
 ```
 
 ---
