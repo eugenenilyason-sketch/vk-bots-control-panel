@@ -71,19 +71,12 @@ services:
       - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-admin}
       - N8N_JWT_SECRET=${N8N_JWT_SECRET}
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=supabase
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_USER=postgres
-      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_POSTGRESDB_DATABASE=vk_bot
+      # Используем SQLite вместо PostgreSQL для избежания конфликтов
+      - DB_TYPE=sqlite
       - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
     volumes:
       - ./n8n/data:/home/node/.n8n
       - ./n8n/workflows:/home/node/.n8n/workflows
-    depends_on:
-      supabase:
-        condition: service_healthy
     networks:
       - vk-bot-network
     labels:
