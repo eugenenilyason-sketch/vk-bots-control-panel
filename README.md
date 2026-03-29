@@ -4,13 +4,19 @@
 
 **🔐 Полная SSL изоляция: HTTPS + PostgreSQL SSL**
 
+---
+
 ## 🚀 Быстрый старт
 
-### 🐳 Запуск в Docker (рекомендуется)
+### 🐳 Запуск в Docker
 
 ```bash
+# Клонирование репозитория
+git clone <repository-url>
+cd project-root
+
 # Запуск проекта
-./scripts/start-docker.sh
+docker compose up -d
 
 # Проверка статуса
 docker compose ps
@@ -19,35 +25,10 @@ docker compose ps
 docker compose logs -f
 ```
 
-**Доступ к сервисам**:
+**Доступ**:
 - Frontend: https://localhost:443 (HTTPS)
 
-**Внутренние сервисы** (не доступны наружу):
-- Backend API: только внутри Docker сети
-- PostgreSQL: только внутри Docker сети (с SSL)
-- Redis: только внутри Docker сети
-
 ---
-
-### 🔧 Локальная разработка
-
-```bash
-# Копирование переменных окружения
-cp .env.example .env
-
-# Редактирование .env с вашими данными
-nano .env
-```
-
-**Обновите переменные**:
-```env
-FRONTEND_URL=https://yourdomain.com
-VK_CLIENT_ID=your_vk_client_id
-VK_CLIENT_SECRET=your_vk_client_secret
-VK_REDIRECT_URI=https://yourdomain.com
-YOOMONEY_ACCOUNT_NUMBER=your_account
-YOOMONEY_API_KEY=your_api_key
-```
 
 ## 🔐 SSL защита
 
@@ -65,6 +46,7 @@ YOOMONEY_API_KEY=your_api_key
 - ✅ Сертификаты в `supabase/ssl/`
 
 ### Let's Encrypt (для production)
+
 ```bash
 # Получение сертификата
 ./scripts/get-letsencrypt-cert.sh yourdomain.com email@example.com
@@ -73,18 +55,22 @@ YOOMONEY_API_KEY=your_api_key
 crontab scripts/letsencrypt-crontab
 ```
 
-📖 **Подробная документация**: [docs/LETSENCRYPT-SSL.md](docs/LETSENCRYPT-SSL.md)
-
 ---
 
 ## 📚 Документация
 
-- [📋 Полная спецификация](PROJECT-SPEC.md)
-- [📡 API документация](docs/API.md)
-- [🚀 Инструкция по деплою](docs/DEPLOYMENT.md)
-- [💳 ЮMoney P2P интеграция](docs/YOOMONEY-P2P.md)
-- [🗺️ Roadmap](ROADMAP.md)
-- [📝 Changelog](CHANGELOG.md)
+### Основная
+- 📖 [API документация](docs/API.md)
+- 🚀 [Инструкция по деплою](docs/DEPLOYMENT.md)
+- 💳 [ЮMoney P2P интеграция](docs/YOOMONEY-P2P.md)
+- 🔐 [Let's Encrypt руководство](docs/LETSENCRYPT-SSL.md)
+
+### Дополнительные материалы
+- 📋 [Быстрый старт](docs/QUICKSTART.md)
+- 📊 [Отчёт о тестировании](docs/TEST-REPORT.md)
+- 📝 [История изменений](CHANGELOG.md)
+
+---
 
 ## 🛠 Технологический стек
 
@@ -93,7 +79,7 @@ crontab scripts/letsencrypt-crontab
 - **Framework**: Express.js
 - **Language**: TypeScript
 - **Database ORM**: Prisma
-- **Database**: PostgreSQL (Supabase)
+- **Database**: PostgreSQL (Supabase) с SSL
 - **Auth**: JWT, OAuth 2.0 (VK)
 - **Payments**: ЮKassa, ЮMoney P2P
 
@@ -114,6 +100,8 @@ crontab scripts/letsencrypt-crontab
 - **Frontend**: Nginx с HTTPS
 - **Monitoring**: Watchtower
 
+---
+
 ## 📋 Требования
 
 - Docker 20+
@@ -121,6 +109,8 @@ crontab scripts/letsencrypt-crontab
 - Node.js 18+ (для локальной разработки)
 - OpenSSL (для генерации секретов)
 - VK Developers приложение (для OAuth)
+
+---
 
 ## 🔧 Разработка
 
@@ -163,6 +153,76 @@ npm run build
 npm run preview
 ```
 
+---
+
+## 📊 Структура проекта
+
+```
+project-root/
+├── docker-compose.yml          # Docker Compose (SSL enabled)
+├── .env.example                # Шаблон переменных окружения
+├── frontend/
+│   ├── Dockerfile              # Nginx с SSL
+│   ├── nginx-ssl.conf          # SSL конфигурация Nginx
+│   ├── ssl/                    # SSL сертификаты
+│   └── public/                 # HTML страницы
+├── backend/
+│   ├── src/
+│   │   ├── config/             # Конфигурация (SSL settings)
+│   │   ├── routes/             # API endpoints
+│   │   └── services/           # Бизнес логика
+│   └── prisma/
+│       └── schema.prisma       # Database schema
+├── supabase/
+│   ├── Dockerfile              # PostgreSQL с SSL
+│   ├── ssl/                    # SSL сертификаты
+│   └── migrations/             # SQL миграции
+├── scripts/
+│   ├── generate-ssl-certs.sh   # Генерация SSL сертификатов
+│   ├── get-letsencrypt-cert.sh # Получение Let's Encrypt
+│   ├── renew-letsencrypt-cert.sh # Обновление SSL
+│   └── backup.sh               # Бэкап БД
+└── docs/
+    ├── API.md                  # API документация
+    ├── DEPLOYMENT.md           # Инструкция по деплою
+    ├── LETSENCRYPT-SSL.md      # Let's Encrypt руководство
+    └── YOOMONEY-P2P.md         # ЮMoney интеграция
+```
+
+---
+
+## 🔑 Переменные окружения
+
+Скопируйте `.env.example` в `.env` и настройте:
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+### Основные переменные
+
+```env
+# Database
+POSTGRES_PASSWORD=your_password
+JWT_SECRET=your_secret
+
+# VK OAuth
+VK_CLIENT_ID=your_client_id
+VK_CLIENT_SECRET=your_client_secret
+VK_REDIRECT_URI=https://yourdomain.com
+
+# Payments
+YOOKASSA_SHOP_ID=your_shop_id
+YOOKASSA_SECRET_KEY=your_secret_key
+
+# SSL
+DATABASE_SSL_ENABLED=true
+DATABASE_SSL_REJECT_UNAUTHORIZED=false
+```
+
+---
+
 ## 📞 Поддержка
 
 - GitHub Issues: Для багов и feature requests
@@ -170,4 +230,11 @@ npm run preview
 
 ---
 
-*Версия: 1.1.0 | Дата: 28 марта 2026*
+## 📝 Лицензия
+
+MIT
+
+---
+
+*Версия: 1.2.0 | Дата: 29 марта 2026*  
+*Статус: ✅ Полная SSL защита*
