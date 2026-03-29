@@ -17,6 +17,8 @@ yarn.lock
 .qwen/
 *.qwen/
 .qwenignore
+MCP-SERVERS.md
+SKILLS.md
 
 # Logs
 logs/
