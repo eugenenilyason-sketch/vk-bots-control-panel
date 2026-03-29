@@ -591,11 +591,10 @@ n8n → Workflows → VK Bot → Automation
 
 ### Phase 0 Checklist
 
-- [ ] PROJECT-SPEC.md утверждён
-- [ ] Docker установлен и работает
-- [ ] MCP серверы настроены
-- [ ] Git репозиторий создан
-- [ ] VK Developers приложение создано
+- [x] PROJECT-SPEC.md утверждён
+- [x] Docker установлен и работает
+- [x] Git репозиторий создан
+- [x] VK Developers приложение создано
 
 ### Phase 1 Checklist
 
