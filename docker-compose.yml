@@ -55,7 +55,9 @@ services:
 
   # Supabase (PostgreSQL)
   supabase:
-    image: supabase/postgres:15.1.0.117
+    build:
+      context: ./supabase
+      dockerfile: Dockerfile
     container_name: supabase
     restart: unless-stopped
     # PostgreSQL доступен только внутри сети
