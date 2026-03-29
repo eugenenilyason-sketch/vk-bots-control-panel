@@ -165,10 +165,10 @@ PAYMENT_METHOD_CARDS_ENABLED=true
 #### 📦 Инициализация проекта
 
 - ✅ Полная спецификация проекта (PROJECT-SPEC.md)
-- ✅ Docker Compose конфигурация (8 сервисов)
+- ✅ Docker Compose конфигурация (7 сервисов)
 - ✅ SQL миграции (5 таблиц)
 - ✅ Скрипты (init, backup, deploy, start-docker)
-- ✅ Документация (README, API, DEPLOYMENT, ROADMAP, NPM-SETUP, YOOMONEY-P2P)
+- ✅ Документация (README, API, DEPLOYMENT, YOOMONEY-P2P, QUICKSTART)
 
 #### 🛠 Технологический стек
 

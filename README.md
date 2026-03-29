@@ -2,7 +2,7 @@
 
 Система управления нейро-агентами ВКонтакте с интеграцией n8n и NocoDB.
 
-**🎯 Работа на одном домене за Nginx Proxy Manager**
+**🎯 Полная Docker изоляция**
 
 ## 🚀 Быстрый старт
 
@@ -22,28 +22,12 @@ docker compose logs -f
 **Доступ к сервисам**:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:4000
-- Nginx Proxy Manager: http://localhost:81
 - n8n: http://localhost:5678
 - NocoDB: http://localhost:8080
 
 ---
 
 ### 🔧 Локальная разработка
-
-#### 1. Настройка Nginx Proxy Manager
-
-**Выберите вариант развёртывания**:
-
-| Вариант | Архитектура | Сложность | Когда использовать |
-|---------|-------------|-----------|-------------------|
-| **Одиночный NPM** | Internet → NPM → Сайт | ⭐ Простой | Для большинства проектов |
-| **Цепочка NPM** | Internet → NPM (Edge) → NPM (Dev) → Сайт | ⭐⭐⭐ Сложный | Для DMZ, дополнительной безопасности |
-
-📖 **Подробные инструкции**:
-- [Одиночный NPM](docs/NPM-SETUP.md) — рекомендуется для начала
-- [Цепочка NPM](docs/NPM-CHAIN-SETUP.md) — для сложных сетевых конфигураций
-
-### 2. Клонирование и настройка
 
 ```bash
 # Копирование переменных окружения
@@ -95,7 +79,6 @@ YOOMONEY_API_KEY=your_api_key
 
 ### DevOps
 - **Container**: Docker + Docker Compose
-- **Proxy**: Nginx Proxy Manager
 - **Automation**: n8n
 - **Admin Panel**: NocoDB
 - **Monitoring**: Watchtower

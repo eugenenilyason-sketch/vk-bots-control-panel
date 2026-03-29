@@ -56,7 +56,6 @@
 ### DevOps
 | Компонент | Технология | Назначение |
 |-----------|------------|------------|
-| **Proxy** | Nginx Proxy Manager | Reverse proxy + SSL |
 | **Container** | Docker + Docker Compose | Оркестрация |
 | **Secrets** | Docker Secrets / .env | Управление секретами |
 | **Logs** | PM2 + Logrotate | Логгирование |
@@ -161,9 +160,6 @@ project-root/
 ├── docker-compose.yml              # Основная Docker Compose конфигурация
 ├── .env                            # Переменные окружения (секреты)
 ├── .env.example                    # Шаблон переменных окружения
-├── nginx/
-│   ├── Dockerfile                  # Nginx Proxy Manager кастомизация
-│   └── proxy.conf                  # Nginx конфигурация
 ├── frontend/
 │   ├── package.json
 │   ├── Dockerfile
@@ -225,22 +221,6 @@ project-root/
 version: '3.8'
 
 services:
-  # Nginx Proxy Manager
-  nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: npm
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "81:81"    # Admin port
-      - "443:443"
-    volumes:
-      - ./nginx/data:/data
-      - ./nginx/letsencrypt:/etc/letsencrypt
-      - ./nginx/proxy.conf:/etc/nginx/proxy.conf
-    networks:
-      - vk-bot-network
-
   # Frontend (React)
   frontend:
     build:
@@ -574,19 +554,17 @@ openssl rand -hex 32  # N8N_JWT_SECRET
 1. ✅ `README.md` — Быстрый старт
 2. ✅ `docs/API.md` — API документация
 3. ✅ `docs/DEPLOYMENT.md` — Инструкция по деплою
-4. ✅ `docs/NPM-SETUP.md` — Настройка Nginx Proxy Manager (одиночный)
-5. ✅ `docs/NPM-CHAIN-SETUP.md` — Настройка цепочки NPM (Edge + Dev)
-6. ✅ `docs/YOOMONEY-P2P.md` — Интеграция ЮMoney P2P
-7. ✅ `docs/QUICKSTART.md` — Быстрый старт
-8. ✅ `docs/TEST-RUN-REPORT.md` — Отчёт о тестировании
+4. ✅ `docs/YOOMONEY-P2P.md` — Интеграция ЮMoney P2P
+5. ✅ `docs/QUICKSTART.md` — Быстрый старт
+6. ✅ `docs/TEST-RUN-REPORT.md` — Отчёт о тестировании
 
 ### Планируются
 
-9. `docs/DEVELOPMENT.md` — Гайд для разработчиков
-10. `docs/ADMIN.md` — Руководство администратора
-11. `docs/USER.md` — Руководство пользователя
-12. `docs/N8N_WORKFLOWS.md` — Описание workflow n8n
-13. `docs/DATABASE.md` — Схема базы данных
+7. `docs/DEVELOPMENT.md` — Гайд для разработчиков
+8. `docs/ADMIN.md` — Руководство администратора
+9. `docs/USER.md` — Руководство пользователя
+10. `docs/N8N_WORKFLOWS.md` — Описание workflow n8n
+11. `docs/DATABASE.md` — Схема базы данных
 
 ---
 
