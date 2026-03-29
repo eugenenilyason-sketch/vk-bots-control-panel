@@ -6,7 +6,33 @@
 
 ## 🚀 Быстрый старт
 
-### 1. Настройка Nginx Proxy Manager
+### 🐳 Запуск в Docker (рекомендуется)
+
+```bash
+cd /home/vidserv/web-vk-bot
+
+# Запуск проекта
+./scripts/start-docker.sh
+
+# Проверка статуса
+docker compose ps
+
+# Просмотр логов
+docker compose logs -f
+```
+
+**Доступ к сервисам**:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:4000
+- Nginx Proxy Manager: http://localhost:81
+- n8n: http://localhost:5678
+- NocoDB: http://localhost:8080
+
+---
+
+### 🔧 Локальная разработка
+
+#### 1. Настройка Nginx Proxy Manager
 
 **Выберите вариант развёртывания**:
 

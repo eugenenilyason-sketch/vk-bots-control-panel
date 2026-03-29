@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Nginx Proxy Manager
   nginx-proxy-manager:
@@ -18,7 +16,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
-  # Frontend (React)
+  # Frontend (React/Static)
   frontend:
     build:
       context: ./frontend
@@ -29,8 +27,12 @@ services:
       - "3000"
     environment:
       - NODE_ENV=production
+    depends_on:
+      - backend
     networks:
       - vk-bot-network
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # Backend (Node.js API)
   backend:
@@ -46,45 +48,46 @@ services:
       - PORT=4000
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@supabase:5432/vk_bot
       - JWT_SECRET=${JWT_SECRET}
-      - VK_CLIENT_ID=${VK_CLIENT_ID}
-      - VK_CLIENT_SECRET=${VK_CLIENT_SECRET}
-      - OK_CLIENT_ID=${OK_CLIENT_ID}
-      - OK_CLIENT_SECRET=${OK_CLIENT_SECRET}
-      - YOOKASSA_SHOP_ID=${YOOKASSA_SHOP_ID}
-      - YOOKASSA_SECRET_KEY=${YOOKASSA_SECRET_KEY}
-      - YOOKASSA_WEBHOOK_URL=${YOOKASSA_WEBHOOK_URL}
-      - YOOMONEY_ACCOUNT_NUMBER=${YOOMONEY_ACCOUNT_NUMBER}
-      - YOOMONEY_API_KEY=${YOOMONEY_API_KEY}
-      - YOOMONEY_WEBHOOK_URL=${YOOMONEY_WEBHOOK_URL}
-      - YOOMONEY_VERIFIED_USER_VK_ID=${YOOMONEY_VERIFIED_USER_VK_ID}
-      - PAYMENT_METHOD_YOOKASSA_ENABLED=${PAYMENT_METHOD_YOOKASSA_ENABLED:-true}
-      - PAYMENT_METHOD_YOOMONEY_P2P_ENABLED=${PAYMENT_METHOD_YOOMONEY_P2P_ENABLED:-false}
-      - PAYMENT_METHOD_CARDS_ENABLED=${PAYMENT_METHOD_CARDS_ENABLED:-true}
+      - VK_CLIENT_ID=${VK_CLIENT_ID:-dev_client_id}
+      - VK_CLIENT_SECRET=${VK_CLIENT_SECRET:-dev_client_secret}
+      - VK_REDIRECT_URI=${VK_REDIRECT_URI:-http://localhost:3000}
+      - YOOKASSA_SHOP_ID=${YOOKASSA_SHOP_ID:-}
+      - YOOKASSA_SECRET_KEY=${YOOKASSA_SECRET_KEY:-}
+      - YOOKASSA_WEBHOOK_URL=${YOOKASSA_WEBHOOK_URL:-}
+      - YOOMONEY_ACCOUNT_NUMBER=${YOOMONEY_ACCOUNT_NUMBER:-}
+      - YOOMONEY_API_KEY=${YOOMONEY_API_KEY:-}
+      - YOOMONEY_WEBHOOK_URL=${YOOMONEY_WEBHOOK_URL:-}
       - N8N_API_URL=http://n8n:5678
-      - N8N_API_KEY=${N8N_API_KEY}
+      - N8N_API_KEY=${N8N_API_KEY:-}
       - NOCODB_API_URL=http://nocodb:8080
-      - NOCODB_API_KEY=${NOCODB_API_KEY}
+      - NOCODB_API_KEY=${NOCODB_API_KEY:-}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - FRONTEND_URL=http://frontend:3000
     volumes:
       - ./backend/logs:/app/logs
     depends_on:
-      - supabase
-      - n8n
-      - nocodb
+      supabase:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - vk-bot-network
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # n8n Automation
   n8n:
     image: docker.n8n.io/n8nio/n8n:latest
     container_name: n8n
     restart: unless-stopped
+    expose:
+      - "5678"
     environment:
-      - N8N_HOST=${N8N_HOST}
+      - N8N_HOST=${N8N_HOST:-localhost}
       - N8N_PORT=5678
       - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-admin}
       - N8N_JWT_SECRET=${N8N_JWT_SECRET}
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=supabase
@@ -92,38 +95,46 @@ services:
       - DB_POSTGRESDB_USER=postgres
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_POSTGRESDB_DATABASE=vk_bot
-      - WEBHOOK_URL=https://${N8N_HOST}/
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
     volumes:
       - ./n8n/data:/home/node/.n8n
       - ./n8n/workflows:/home/node/.n8n/workflows
     depends_on:
-      - supabase
+      supabase:
+        condition: service_healthy
     networks:
       - vk-bot-network
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # NocoDB
   nocodb:
     image: nocodb/nocodb:latest
     container_name: nocodb
     restart: unless-stopped
+    expose:
+      - "8080"
     environment:
       - NC_DB=pg://supabase:5432?u=postgres&p=${POSTGRES_PASSWORD}&d=vk_bot
       - NC_AUTH_JWT_SECRET=${NC_JWT_SECRET}
-      - NC_PUBLIC_URL=https://${NOCODB_HOST}
+      - NC_PUBLIC_URL=${NC_PUBLIC_URL:-http://localhost:8080}
     volumes:
       - ./nocodb/data:/usr/app/data
     depends_on:
-      - supabase
+      supabase:
+        condition: service_healthy
     networks:
       - vk-bot-network
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # Supabase (PostgreSQL)
   supabase:
     image: supabase/postgres:15.1.0.117
     container_name: supabase
     restart: unless-stopped
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -134,17 +145,29 @@ services:
       - ./supabase/migrations:/docker-entrypoint-initdb.d
     networks:
       - vk-bot-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vk_bot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # Redis (caching, sessions)
   redis:
     image: redis:7-alpine
     container_name: redis
     restart: unless-stopped
+    expose:
+      - "6379"
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     networks:
       - vk-bot-network
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   # Watchtower (auto-update)
   watchtower:
