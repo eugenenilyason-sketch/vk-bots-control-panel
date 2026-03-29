@@ -45,6 +45,20 @@ echo ""
 echo "🔧 Запуск Backend..."
 cd backend
 
+# Создаём .env если нет
+if [ ! -f ".env" ]; then
+    echo "⚠️  .env не найден. Создаю..."
+    cat > .env <<EOF
+DATABASE_URL=$DATABASE_URL
+JWT_SECRET=dev_jwt_secret_for_local_development
+VK_CLIENT_ID=dev_client_id
+VK_CLIENT_SECRET=dev_client_secret
+VK_REDIRECT_URI=http://localhost:3000
+NODE_ENV=development
+PORT=4000
+EOF
+fi
+
 export DATABASE_URL="postgresql://postgres:ed77f303bb44e9b51ce591eb354c33cadadf9bfa0ca030302b03b898d298f75e@localhost:5432/vk_bot"
 
 # Остановка предыдущего процесса
