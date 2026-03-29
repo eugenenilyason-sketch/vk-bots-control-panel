@@ -20,6 +20,12 @@ yarn.lock
 MCP-SERVERS.md
 SKILLS.md
 
+# Project Documentation (generated)
+PROJECT-SPEC.md
+ROADMAP.md
+SUMMARY.md
+CHANGELOG.md
+
 # Logs
 logs/
 *.log
