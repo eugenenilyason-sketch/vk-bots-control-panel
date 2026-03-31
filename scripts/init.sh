@@ -130,6 +130,22 @@ sleep 10
 echo "   • PHP: 10 сек"
 sleep 10
 
+# Установка Laravel зависимостей
+echo ""
+echo "📦 Установка Laravel зависимостей..."
+if [ -f "frontend/php-app/composer.json" ] && [ ! -d "frontend/php-app/vendor" ]; then
+    echo "   Запуск composer install..."
+    docker compose exec -T php composer install --no-interaction --optimize-autoloader 2>&1 | tail -5
+    if [ $? -eq 0 ]; then
+        echo "✅ Laravel зависимости установлены"
+    else
+        echo "⚠️  Ошибка установки зависимостей - выполните вручную:"
+        echo "   docker compose exec php composer install"
+    fi
+else
+    echo "✅ Laravel зависимости уже установлены"
+fi
+
 # Проверка статуса
 echo ""
 echo "📊 Статус сервисов:"
