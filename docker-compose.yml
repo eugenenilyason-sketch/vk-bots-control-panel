@@ -90,17 +90,13 @@ services:
 
   # Supabase (PostgreSQL)
   supabase:
-    build:
-      context: ./supabase
-      dockerfile: Dockerfile
+    image: postgres:15-alpine
     container_name: supabase
     restart: unless-stopped
-    # PostgreSQL доступен только внутри сети
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=vk_bot
-      - JWT_SECRET=${JWT_SECRET}
     volumes:
       - supabase_data:/var/lib/postgresql/data
       - ./supabase/migrations:/docker-entrypoint-initdb.d
@@ -112,8 +108,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
 
   # Redis (caching, sessions)
   redis:
