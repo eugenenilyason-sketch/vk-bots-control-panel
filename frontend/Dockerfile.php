@@ -1,5 +1,10 @@
 FROM php:8.4-fpm
 
+# Используем российские зеркала для стабильности
+RUN echo "deb http://mirror.yandex.ru/debian bookworm main" > /etc/apt/sources.list && \
+    echo "deb http://mirror.yandex.ru/debian bookworm-updates main" >> /etc/apt/sources.list && \
+    echo "deb http://mirror.yandex.ru/debian-security bookworm-security main" >> /etc/apt/sources.list
+
 # Установка расширений PHP
 RUN apt-get update && apt-get install -y \
     libpq-dev \
