@@ -77,3 +77,15 @@ coverage/
 # Temporary
 tmp/
 temp/
+
+# SSL Certificates (SENSITIVE!)
+frontend/ssl/*.crt
+frontend/ssl/*.key
+frontend/ssl/*.pem
+supabase/ssl/*.crt
+supabase/ssl/*.key
+supabase/ssl/*.pem
+nginx/letsencrypt/
+*.crt
+*.key
+*.pem
