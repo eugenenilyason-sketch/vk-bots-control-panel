@@ -162,7 +162,7 @@ if [ -f "frontend/php-app/composer.json" ] && [ ! -d "frontend/php-app/vendor" ]
     # Пробуем несколько раз (контейнер может быть ещё не готов)
     for attempt in 1 2 3; do
         echo "   Попытка $attempt..."
-        if docker compose exec -T php composer install --no-interaction --optimize-autoloader 2>&1 | tail -5; then
+        if docker compose exec -T php composer install --no-interaction --optimize-autoloader --ignore-platform-reqs 2>&1 | tail -5; then
             echo "   ✅ Laravel зависимости установлены"
             break
         else
@@ -176,7 +176,7 @@ if [ -f "frontend/php-app/composer.json" ] && [ ! -d "frontend/php-app/vendor" ]
         echo "✅ Laravel зависимости установлены"
     else
         echo "⚠️  Ошибка установки зависимостей - выполните вручную:"
-        echo "   docker compose exec php composer install"
+        echo "   docker compose exec php composer install --ignore-platform-reqs"
     fi
 else
     echo "✅ Laravel зависимости уже установлены"
