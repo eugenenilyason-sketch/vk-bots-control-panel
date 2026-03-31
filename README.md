@@ -8,26 +8,45 @@
 
 ## 🚀 Быстрый старт
 
+### 📋 Требования
+
+| Минимальные | Рекомендуемые |
+|-------------|---------------|
+| CPU: 2 cores | CPU: 4 cores |
+| RAM: 4 GB | RAM: 8 GB |
+| Disk: 20 GB | Disk: 50 GB SSD |
+| Docker: 20+ | Docker Compose: 2+ |
+
 ### 🐳 Запуск в Docker
 
 ```bash
-# Клонирование репозитория
+# 1. Клонирование репозитория
 git clone https://github.com/eugenenilyason-sketch/vk-bots-control-panel.git
 cd vk-bots-control-panel
 
-# Запуск проекта
+# 2. Инициализация (создание .env и генерация секретов)
+./scripts/init.sh
+
+# 3. Запуск проекта
 docker compose up -d
 
-# Проверка статуса
+# 4. Создание админа
+./scripts/make-admin.sh admin@yourdomain.com superadmin
+
+# 5. Проверка статуса
 docker compose ps
 
-# Просмотр логов
+# 6. Просмотр логов
 docker compose logs -f
 ```
 
 **Доступ**:
-- Frontend: https://yourdomain.com (HTTPS)
-- Backend API: http://vk-backend:4000
+- Frontend: `https://yourdomain.com` (HTTPS)
+- Backend API: `http://vk-backend:4000`
+
+**Вход для админа**:
+- Email: `admin@yourdomain.com`
+- Пароль: (из скрипта `make-admin.sh`)
 
 ---
 
@@ -39,12 +58,10 @@ docker compose logs -f
 - ✅ TLSv1.2 / TLSv1.3
 - ✅ Strong cipher suites
 - ✅ Security headers (HSTS, X-Frame-Options)
-- ✅ Порт 443
 
 ### Backend (PostgreSQL SSL)
 - ✅ SSL шифрование соединений
 - ✅ TLSv1.2 минимум
-- ✅ Сертификаты в `supabase/ssl/`
 
 ### Let's Encrypt (для production)
 
@@ -52,9 +69,11 @@ docker compose logs -f
 # Получение сертификата
 ./scripts/get-letsencrypt-cert.sh yourdomain.com email@example.com
 
-# Автоматическое обновление
+# Автоматическое обновление (cron)
 crontab scripts/letsencrypt-crontab
 ```
+
+**📖 Полная документация**: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 
 ---
 
