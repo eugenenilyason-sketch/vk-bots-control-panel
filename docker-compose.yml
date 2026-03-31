@@ -8,7 +8,16 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
-      - ./frontend/php-app:/var/www/html
+      # Монтируем только app, config, routes, resources - не vendor!
+      - ./frontend/php-app/app:/var/www/html/app
+      - ./frontend/php-app/config:/var/www/html/config
+      - ./frontend/php-app/routes:/var/www/html/routes
+      - ./frontend/php-app/resources:/var/www/html/resources
+      - ./frontend/php-app/public:/var/www/html/public
+      - ./frontend/php-app/.env:/var/www/html/.env
+      # Storage и cache - отдельные volume
+      - php_storage:/var/www/html/storage
+      - php_bootstrap:/var/www/html/bootstrap/cache
     networks:
       - vk-bot-network
     depends_on:
@@ -141,3 +150,5 @@ networks:
 volumes:
   supabase_data:
   redis_data:
+  php_storage:
+  php_bootstrap:

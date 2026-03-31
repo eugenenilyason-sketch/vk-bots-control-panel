@@ -2,7 +2,6 @@
 FROM php:8.4-fpm-bookworm
 
 # Копируем системные пакеты из кэша (если есть)
-# Если нет - используем предустановленные в bookworm
 RUN set -eux; \
     apt-get update || true; \
     apt-get install -y --no-install-recommends \
@@ -19,9 +18,15 @@ RUN docker-php-ext-install pdo pdo_pgsql pgsql
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Настройка рабочего каталога и создание vendor
+# Настройка рабочего каталога
 WORKDIR /var/www/html
-RUN mkdir -p /var/www/html/vendor && chown -R www-data:www-data /var/www/html
+
+# Копируем composer.json и composer.lock для кэширования
+COPY php-app/composer.json php-app/composer.lock ./
+
+# Устанавливаем зависимости (до монтирования volume)
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs && \
+    chown -R www-data:www-data /var/www/html
 
 # Переключение на пользователя www-data
 USER www-data
