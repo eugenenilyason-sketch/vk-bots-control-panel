@@ -4,9 +4,9 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Install system dependencies
-# Используем конкретные версии пакетов для Alpine 3.19 (стабильный)
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.19/main" > /etc/apk/repositories && \
-    echo "http://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories && \
+# Используем российские зеркала для стабильности
+RUN echo "http://mirror.yandex.ru/alpine/v3.19/main" > /etc/apk/repositories && \
+    echo "http://mirror.yandex.ru/alpine/v3.19/community" >> /etc/apk/repositories && \
     apk update && \
     apk add --no-cache openssl curl
 
