@@ -27,7 +27,7 @@
 - **CPU**: 4 cores
 - **RAM**: 8 GB
 - **Disk**: 50 GB SSD
-- **Domain**: yourdomain.com
+- **Domain**: lianium.ru
 
 ---
 
@@ -36,7 +36,7 @@
 ### 1. Клонирование репозитория
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/eugenenilyason-sketch/vk-bots-control-panel.git
 cd web-vk-bot
 ```
 
@@ -68,7 +68,7 @@ docker compose up -d
 ### 4. Создание админа
 
 ```bash
-./scripts/make-admin.sh admin@yourdomain.com superadmin
+./scripts/make-admin.sh admin@lianium.ru superadmin
 ```
 
 ---
@@ -85,12 +85,12 @@ DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@supabase:5432/vk_bot
 # VK OAuth
 VK_CLIENT_ID=54514184
 VK_CLIENT_SECRET=ваш_secret
-VK_REDIRECT_URI=https://yourdomain.com
+VK_REDIRECT_URI=https://lianium.ru
 
 # Application
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://yourdomain.com
+APP_URL=https://lianium.ru
 
 # Session
 SESSION_DRIVER=file
@@ -128,13 +128,13 @@ docker compose logs -f
 ### 3. Открытие сайта
 
 ```
-https://yourdomain.com/
+https://lianium.ru/
 ```
 
 ### 4. Вход как админ
 
 ```
-Email: admin@yourdomain.com
+Email: admin@lianium.ru
 Пароль: (из make-admin.sh)
 ```
 
@@ -152,8 +152,8 @@ Email: admin@yourdomain.com
 ### 2. Настройки приложения
 
 ```
-Адрес сайта: https://yourdomain.com
-Redirect URI: https://yourdomain.com
+Адрес сайта: https://lianium.ru
+Redirect URI: https://lianium.ru
 ```
 
 ### 3. Получение ключей
@@ -179,7 +179,7 @@ docker compose restart vk-backend
 
 ```bash
 # Получение сертификата
-./scripts/get-letsencrypt-cert.sh yourdomain.com email@example.com
+./scripts/get-letsencrypt-cert.sh lianium.ru email@example.com
 
 # Автоматическое обновление
 crontab scripts/letsencrypt-crontab
@@ -189,7 +189,7 @@ crontab scripts/letsencrypt-crontab
 
 ```bash
 # Проверка сертификата
-openssl s_client -connect yourdomain.com:443
+openssl s_client -connect lianium.ru:443
 
 # Проверка онлайн
 https://www.ssllabs.com/ssltest/
@@ -310,8 +310,8 @@ docker compose restart vk-nginx-php
 
 ## Контакты
 
-**Поддержка**: support@yourdomain.com  
-**Документация**: https://yourdomain.com/docs
+**Поддержка**: support@lianium.ru  
+**Документация**: https://lianium.ru/docs
 
 ---
 

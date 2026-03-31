@@ -12,7 +12,7 @@
 
 ```bash
 # Клонирование репозитория
-git clone <repository-url>
+git clone https://github.com/eugenenilyason-sketch/vk-bots-control-panel.git
 cd web-vk-bot
 
 # Запуск проекта
@@ -26,7 +26,7 @@ docker compose logs -f
 ```
 
 **Доступ**:
-- Frontend: https://yourdomain.com (HTTPS)
+- Frontend: https://lianium.ru (HTTPS)
 - Backend API: http://vk-backend:4000
 
 ---
@@ -50,7 +50,7 @@ docker compose logs -f
 
 ```bash
 # Получение сертификата
-./scripts/get-letsencrypt-cert.sh yourdomain.com email@example.com
+./scripts/get-letsencrypt-cert.sh lianium.ru email@example.com
 
 # Автоматическое обновление
 crontab scripts/letsencrypt-crontab
@@ -206,12 +206,12 @@ DATABASE_URL=postgresql://postgres:password@supabase:5432/vk_bot
 # VK OAuth
 VK_CLIENT_ID=54514184
 VK_CLIENT_SECRET=your_secret
-VK_REDIRECT_URI=https://yourdomain.com
+VK_REDIRECT_URI=https://lianium.ru
 
 # Application
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://yourdomain.com
+APP_URL=https://lianium.ru
 
 # Session
 SESSION_DRIVER=file

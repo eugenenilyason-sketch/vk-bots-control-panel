@@ -2,7 +2,7 @@
 
 API документация для системы управления нейро-агентами ВКонтакте (Laravel 11).
 
-**Base URL**: `https://yourdomain.com`  
+**Base URL**: `https://lianium.ru`  
 **Version**: 2.0.0  
 **Auth**: Laravel Session (Cookie)
 
