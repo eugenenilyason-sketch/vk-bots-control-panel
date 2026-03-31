@@ -158,7 +158,7 @@
                         
                         <div class="form-group" style="margin: 0;">
                             <label for="webhook_url_{{ $method->name }}">Webhook URL</label>
-                            <input type="url" id="webhook_url_{{ $method->name }}" name="settings[webhook_url]" value="{{ old('settings.webhook_url', $method->settings['webhook_url'] ?? '') }}" placeholder="https://lianium.ru/webhook/{{ $method->name }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-tertiary); color: var(--text-primary);">
+                            <input type="url" id="webhook_url_{{ $method->name }}" name="settings[webhook_url]" value="{{ old('settings.webhook_url', $method->settings['webhook_url'] ?? '') }}" placeholder="https://yourdomain.com/webhook/{{ $method->name }}" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-tertiary); color: var(--text-primary);">
                             <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">URL для уведомлений</div>
                         </div>
                         

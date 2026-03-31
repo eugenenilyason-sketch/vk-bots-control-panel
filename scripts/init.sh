@@ -70,7 +70,7 @@ if [ ! -f "nginx/ssl/server.crt" ] || [ ! -f "nginx/ssl/server.key" ]; then
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout nginx/ssl/server.key \
         -out nginx/ssl/server.crt \
-        -subj "/CN=lianium.ru/O=VK Neuro-Agents/C=RU" \
+        -subj "/CN=yourdomain.com/O=VK Neuro-Agents/C=RU" \
         2>/dev/null
     
     if [ $? -eq 0 ]; then
@@ -87,7 +87,7 @@ if [ ! -f "nginx/ssl/server.crt" ] || [ ! -f "nginx/ssl/server.key" ]; then
         echo "   openssl req -x509 -nodes -days 365 -newkey rsa:2048 \\"
         echo "     -keyout nginx/ssl/server.key \\"
         echo "     -out nginx/ssl/server.crt \\"
-        echo "     -subj '/CN=lianium.ru/O=VK Neuro-Agents/C=RU'"
+        echo "     -subj '/CN=yourdomain.com/O=VK Neuro-Agents/C=RU'"
     fi
 else
     echo "✅ SSL сертификаты найдены"

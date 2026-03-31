@@ -167,3 +167,13 @@ coverage/
 *.temp
 dev-data/
 test-data/
+frontend/php-app/storage/
+frontend/php-app/bootstrap/cache/
+frontend/nginx-ssl.conf
+frontend/public/slideout.min.js
+frontend/setup-laravel.sh
+frontend/php-app/resources/css/
+frontend/php-app/resources/js/
+frontend/php-app/tailwind.config.js
+frontend/php-app/vite.config.js
+frontend/php-app/tests/
