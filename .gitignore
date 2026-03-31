@@ -89,3 +89,81 @@ nginx/letsencrypt/
 *.crt
 *.key
 *.pem
+
+# ============================================
+# SENSITIVE DATA - НЕ ДЛЯ ПУБЛИЧНОГО ДОСТУПА
+# ============================================
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+*.sql.gz
+*.dump
+backups/
+backup_*.sql
+*.backup
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment (real, not example)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# SSL/TLS Certificates
+*.crt
+*.cer
+*.pem
+*.key
+*.p12
+*.pfx
+ssl/
+certs/
+keys/
+letsencrypt/
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build / Dist
+dist/
+build/
+.next/
+out/
+node_modules/
+vendor/
+
+# Cache
+.cache/
+.parcel-cache/
+*.cache
+bootstrap/cache/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+storage/logs/
+
+# Testing
+coverage/
+.nyc_output/
+.phpunit.result.cache
+
+# Development
+*.tmp
+*.temp
+dev-data/
+test-data/

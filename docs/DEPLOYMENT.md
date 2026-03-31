@@ -37,7 +37,7 @@
 
 ```bash
 git clone https://github.com/eugenenilyason-sketch/vk-bots-control-panel.git
-cd web-vk-bot
+cd vk-bots-control-panel
 ```
 
 ### 2. Инициализация
