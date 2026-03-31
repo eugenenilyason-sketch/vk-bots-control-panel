@@ -52,12 +52,46 @@ echo "📁 Создание директорий..."
 
 mkdir -p nginx/data
 mkdir -p nginx/letsencrypt
+mkdir -p nginx/ssl
 mkdir -p supabase/migrations
 mkdir -p backend/logs
 mkdir -p frontend/php-app/storage
 mkdir -p frontend/php-app/bootstrap/cache
 
 echo "✅ Директории созданы"
+
+# Генерация самоподписанных SSL сертификатов (если нет)
+echo ""
+echo "🔐 Проверка SSL сертификатов..."
+if [ ! -f "nginx/ssl/server.crt" ] || [ ! -f "nginx/ssl/server.key" ]; then
+    echo "⚠️  SSL сертификаты не найдены - создаём самоподписанные..."
+    
+    # Создаём самоподписанный сертификат на 365 дней
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout nginx/ssl/server.key \
+        -out nginx/ssl/server.crt \
+        -subj "/CN=lianium.ru/O=VK Neuro-Agents/C=RU" \
+        2>/dev/null
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ SSL сертификаты созданы:"
+        echo "   - nginx/ssl/server.crt"
+        echo "   - nginx/ssl/server.key"
+        echo ""
+        echo "⚠️  Внимание: Это самоподписанные сертификаты!"
+        echo "   Для production используйте Let's Encrypt:"
+        echo "   ./scripts/get-letsencrypt-cert.sh"
+    else
+        echo "❌ Ошибка создания SSL сертификатов!"
+        echo "   Попробуйте вручную:"
+        echo "   openssl req -x509 -nodes -days 365 -newkey rsa:2048 \\"
+        echo "     -keyout nginx/ssl/server.key \\"
+        echo "     -out nginx/ssl/server.crt \\"
+        echo "     -subj '/CN=lianium.ru/O=VK Neuro-Agents/C=RU'"
+    fi
+else
+    echo "✅ SSL сертификаты найдены"
+fi
 
 # Проверка наличия Docker образов
 echo "🐳 Проверка Docker образов..."
