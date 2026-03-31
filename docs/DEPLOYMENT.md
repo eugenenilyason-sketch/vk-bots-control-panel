@@ -27,7 +27,7 @@
 - **CPU**: 4 cores
 - **RAM**: 8 GB
 - **Disk**: 50 GB SSD
-- **Domain**: lianium.ru
+- **Domain**: yourdomain.com
 
 ---
 
@@ -68,7 +68,7 @@ docker compose up -d
 ### 4. Создание админа
 
 ```bash
-./scripts/make-admin.sh admin@lianium.ru superadmin
+./scripts/make-admin.sh admin@yourdomain.com superadmin
 ```
 
 ---
@@ -85,12 +85,12 @@ DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@supabase:5432/vk_bot
 # VK OAuth
 VK_CLIENT_ID=54514184
 VK_CLIENT_SECRET=ваш_secret
-VK_REDIRECT_URI=https://lianium.ru
+VK_REDIRECT_URI=https://yourdomain.com
 
 # Application
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://lianium.ru
+APP_URL=https://yourdomain.com
 
 # Session
 SESSION_DRIVER=file
@@ -128,13 +128,13 @@ docker compose logs -f
 ### 3. Открытие сайта
 
 ```
-https://lianium.ru/
+https://yourdomain.com/
 ```
 
 ### 4. Вход как админ
 
 ```
-Email: admin@lianium.ru
+Email: admin@yourdomain.com
 Пароль: (из make-admin.sh)
 ```
 
@@ -152,8 +152,8 @@ Email: admin@lianium.ru
 ### 2. Настройки приложения
 
 ```
-Адрес сайта: https://lianium.ru
-Redirect URI: https://lianium.ru
+Адрес сайта: https://yourdomain.com
+Redirect URI: https://yourdomain.com
 ```
 
 ### 3. Получение ключей
@@ -179,7 +179,7 @@ docker compose restart vk-backend
 
 ```bash
 # Получение сертификата
-./scripts/get-letsencrypt-cert.sh lianium.ru email@example.com
+./scripts/get-letsencrypt-cert.sh yourdomain.com email@example.com
 
 # Автоматическое обновление
 crontab scripts/letsencrypt-crontab
@@ -189,7 +189,7 @@ crontab scripts/letsencrypt-crontab
 
 ```bash
 # Проверка сертификата
-openssl s_client -connect lianium.ru:443
+openssl s_client -connect yourdomain.com:443
 
 # Проверка онлайн
 https://www.ssllabs.com/ssltest/
@@ -310,8 +310,8 @@ docker compose restart vk-nginx-php
 
 ## Контакты
 
-**Поддержка**: support@lianium.ru  
-**Документация**: https://lianium.ru/docs
+**Поддержка**: support@yourdomain.com  
+**Документация**: https://yourdomain.com/docs
 
 ---
 
