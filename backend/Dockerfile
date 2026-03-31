@@ -3,9 +3,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install system dependencies with retry for DNS issues
-RUN apk update --no-cache || (sleep 5 && apk update --no-cache) && \
-    apk add --no-cache openssl curl || (sleep 5 && apk add --no-cache openssl curl)
+# Install system dependencies
+# openssl и curl уже есть в node:20-alpine, нужно только обновить
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache --upgrade openssl libcrypto3 curl
 
 # Copy package files
 COPY package*.json ./
