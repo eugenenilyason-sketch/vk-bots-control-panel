@@ -13,7 +13,7 @@
 ```bash
 # Клонирование репозитория
 git clone https://github.com/eugenenilyason-sketch/vk-bots-control-panel.git
-cd web-vk-bot
+cd vk-bots-control-panel
 
 # Запуск проекта
 docker compose up -d
@@ -66,10 +66,11 @@ crontab scripts/letsencrypt-crontab
 
 ### Скрипты
 - 🚀 [init.sh](scripts/init.sh) - Инициализация проекта
-- 🔐 [generate-ssl-certs.sh](scripts/generate-ssl-certs.sh) - Генерация SSL
 - 📦 [deploy.sh](scripts/deploy.sh) - Деплой обновлений
 - 💾 [backup.sh](scripts/backup.sh) - Бэкап БД
 - 👤 [make-admin.sh](scripts/make-admin.sh) - Создание админа
+- 🔐 [get-letsencrypt-cert.sh](scripts/get-letsencrypt-cert.sh) - SSL сертификаты
+- 🔄 [renew-letsencrypt-cert.sh](scripts/renew-letsencrypt-cert.sh) - Обновление SSL
 
 ---
 
