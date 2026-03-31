@@ -26,7 +26,7 @@ docker compose logs -f
 ```
 
 **Доступ**:
-- Frontend: https://lianium.ru (HTTPS)
+- Frontend: https://yourdomain.com (HTTPS)
 - Backend API: http://vk-backend:4000
 
 ---
@@ -206,12 +206,12 @@ DATABASE_URL=postgresql://postgres:password@supabase:5432/vk_bot
 # VK OAuth
 VK_CLIENT_ID=54514184
 VK_CLIENT_SECRET=your_secret
-VK_REDIRECT_URI=https://lianium.ru
+VK_REDIRECT_URI=https://yourdomain.com
 
 # Application
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://lianium.ru
+APP_URL=https://yourdomain.com
 
 # Session
 SESSION_DRIVER=file
