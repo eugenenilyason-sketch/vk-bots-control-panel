@@ -1,20 +1,20 @@
-FROM php:8.4-fpm
+# Используем готовый образ с расширениями
+FROM php:8.4-fpm-bookworm
 
-# Используем российские зеркала для стабильности
-RUN echo "deb http://mirror.yandex.ru/debian bookworm main" > /etc/apt/sources.list && \
-    echo "deb http://mirror.yandex.ru/debian bookworm-updates main" >> /etc/apt/sources.list && \
-    echo "deb http://mirror.yandex.ru/debian-security bookworm-security main" >> /etc/apt/sources.list
+# Копируем системные пакеты из кэша (если есть)
+# Если нет - используем предустановленные в bookworm
+RUN set -eux; \
+    apt-get update || true; \
+    apt-get install -y --no-install-recommends \
+        libpq-dev \
+        zip \
+        unzip \
+        git \
+    || echo "Using pre-installed packages"; \
+    rm -rf /var/lib/apt/lists/*
 
 # Установка расширений PHP
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    && docker-php-ext-install pdo pdo_pgsql pgsql \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -22,7 +22,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Настройка рабочего каталога
 WORKDIR /var/www/html
 
-# Переключение на пользователя www-data ПЕРЕД копированием файлов
+# Переключение на пользователя www-data
 USER www-data
 
 EXPOSE 9000
