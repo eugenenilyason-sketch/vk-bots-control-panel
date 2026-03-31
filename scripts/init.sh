@@ -119,24 +119,60 @@ echo "🚀 Запуск сервисов..."
 
 docker compose up -d
 
-# Ожидание готовности сервисов (увеличено для стабильности)
+# Ожидание готовности сервисов
+echo ""
 echo "⏳ Ожидание готовности сервисов..."
+
+# Ждём пока БД станет healthy
 echo "   • Redis: 5 сек"
 sleep 5
-echo "   • Supabase (БД): 30 сек"
-sleep 30
+
+echo "   • Supabase (БД): ждём healthy статус..."
+for i in {1..30}; do
+    if docker compose ps supabase 2>&1 | grep -q "(healthy)"; then
+        echo "     ✅ БД готова!"
+        break
+    fi
+    echo -n "."
+    sleep 2
+done
+echo ""
+
 echo "   • Backend: 10 сек"
 sleep 10
+
 echo "   • PHP: 10 сек"
 sleep 10
+
+# Проверка что PHP контейнер работает
+echo ""
+echo "🔍 Проверка PHP контейнера..."
+if ! docker compose ps php 2>&1 | grep -q "Up"; then
+    echo "⚠️  PHP контейнер не запущен - перезапускаем..."
+    docker compose restart php
+    sleep 5
+fi
 
 # Установка Laravel зависимостей
 echo ""
 echo "📦 Установка Laravel зависимостей..."
 if [ -f "frontend/php-app/composer.json" ] && [ ! -d "frontend/php-app/vendor" ]; then
     echo "   Запуск composer install..."
-    docker compose exec -T php composer install --no-interaction --optimize-autoloader 2>&1 | tail -5
-    if [ $? -eq 0 ]; then
+    
+    # Пробуем несколько раз (контейнер может быть ещё не готов)
+    for attempt in 1 2 3; do
+        echo "   Попытка $attempt..."
+        if docker compose exec -T php composer install --no-interaction --optimize-autoloader 2>&1 | tail -5; then
+            echo "   ✅ Laravel зависимости установлены"
+            break
+        else
+            echo "   ⚠️  Попытка $attempt не удалась, ждём 10 сек..."
+            sleep 10
+        fi
+    done
+    
+    # Проверка результата
+    if [ -d "frontend/php-app/vendor" ]; then
         echo "✅ Laravel зависимости установлены"
     else
         echo "⚠️  Ошибка установки зависимостей - выполните вручную:"
@@ -145,6 +181,13 @@ if [ -f "frontend/php-app/composer.json" ] && [ ! -d "frontend/php-app/vendor" ]
 else
     echo "✅ Laravel зависимости уже установлены"
 fi
+
+# Исправление прав доступа
+echo ""
+echo "🔧 Исправление прав доступа..."
+chown -R $(id -u):$(id -g) frontend/php-app/storage 2>/dev/null || true
+chown -R $(id -u):$(id -g) frontend/php-app/bootstrap/cache 2>/dev/null || true
+echo "✅ Права исправлены"
 
 # Проверка статуса
 echo ""
