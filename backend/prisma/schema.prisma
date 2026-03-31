@@ -41,6 +41,7 @@ model User {
   firstName       String?     @map(name: "first_name")
   lastName        String?     @map(name: "last_name")
   avatarUrl       String?     @map(name: "avatar_url")
+  passwordHash    String?     @map(name: "password_hash")
   role            UserRole    @default(user)
   balance         Decimal     @default(0.00) @db.Decimal(10, 2)
   isActive        Boolean     @default(true) @map(name: "is_active")

@@ -194,10 +194,12 @@ router.get('/analytics', authMiddleware, adminMiddleware, async (req: AuthReques
     const totalUsers = await prisma.user.count();
     const activeUsers = await prisma.user.count({ where: { isActive: true } });
     const totalBots = await prisma.bot.count();
-    const activeBots = await prisma.bot.count({ where: { status: 'active' } });
     
+    // Используем raw query для обхода проблемы с enum
+    const activeBotsResult = await prisma.$queryRaw`SELECT COUNT(*) FROM bots WHERE status = 'active'::text`;
+    const activeBots = parseInt(activeBotsResult[0]?.count || '0');
+
     const payments = await prisma.payment.aggregate({
-      where: { status: 'succeeded' },
       _sum: { amount: true },
       _count: true,
     });
