@@ -4,10 +4,11 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Install system dependencies
-# openssl и curl уже есть в node:20-alpine, нужно только обновить
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache --upgrade openssl libcrypto3 curl
+# Используем конкретные версии пакетов для Alpine 3.19 (стабильный)
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.19/main" > /etc/apk/repositories && \
+    echo "http://dl-cdn.alpinelinux.org/alpine/v3.19/community" >> /etc/apk/repositories && \
+    apk update && \
+    apk add --no-cache openssl curl
 
 # Copy package files
 COPY package*.json ./
