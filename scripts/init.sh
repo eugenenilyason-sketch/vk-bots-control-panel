@@ -85,18 +85,19 @@ echo "🚀 Запуск сервисов..."
 
 docker compose up -d
 
-# Ожидание готовности сервисов
+# Ожидание готовности сервисов (увеличено для стабильности)
 echo "⏳ Ожидание готовности сервисов..."
-sleep 20
-
-# Очистка кэшей Laravel
-echo "🧹 Очистка кэшей Laravel..."
-docker compose exec -T vk-php php artisan cache:clear || true
-docker compose exec -T vk-php php artisan config:clear || true
-docker compose exec -T vk-php php artisan route:clear || true
-docker compose exec -T vk-php php artisan view:clear || true
+echo "   • Redis: 5 сек"
+sleep 5
+echo "   • Supabase (БД): 30 сек"
+sleep 30
+echo "   • Backend: 10 сек"
+sleep 10
+echo "   • PHP: 10 сек"
+sleep 10
 
 # Проверка статуса
+echo ""
 echo "📊 Статус сервисов:"
 docker compose ps
 
