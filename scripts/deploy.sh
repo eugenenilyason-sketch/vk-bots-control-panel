@@ -17,9 +17,9 @@ fi
 echo "⬇️  Загрузка свежих образов..."
 docker compose pull
 
-# Пересборка frontend и backend
+# Пересборка php и backend
 echo "🔨 Пересборка приложения..."
-docker compose build frontend backend
+docker compose build vk-php vk-backend
 
 # Остановка старых контейнеров
 echo "🛑 Остановка старых контейнеров..."
@@ -31,7 +31,14 @@ docker compose up -d
 
 # Ожидание готовности
 echo "⏳ Ожидание готовности сервисов..."
-sleep 20
+sleep 15
+
+# Очистка кэшей Laravel
+echo "🧹 Очистка кэшей Laravel..."
+docker compose exec -T vk-php php artisan cache:clear || true
+docker compose exec -T vk-php php artisan config:clear || true
+docker compose exec -T vk-php php artisan route:clear || true
+docker compose exec -T vk-php php artisan view:clear || true
 
 # Проверка статуса
 echo "📊 Статус сервисов:"
@@ -46,3 +53,6 @@ echo "✅ Деплой завершён!"
 echo ""
 echo "🔍 Проверьте логи на наличие ошибок:"
 echo "   docker compose logs -f"
+echo ""
+echo "🌐 Доступ:"
+echo "   https://lianium.ru/"

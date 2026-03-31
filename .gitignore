@@ -21,11 +21,15 @@ MCP-SERVERS.md
 SKILLS.md
 
 # Project Documentation (generated)
+*.md
+!README.md
+CHANGELOG.md
 PROJECT-SPEC.md
 ROADMAP.md
 SUMMARY.md
-CHANGELOG.md
-docs/
+docs/*.md
+!docs/API.md
+!docs/DEPLOYMENT.md
 
 # Logs
 logs/

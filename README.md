@@ -1,6 +1,6 @@
 # 🤖 VK Neuro-Agents Control Panel
 
-Система управления нейро-агентами ВКонтакте с полной SSL защитой.
+Панель управления нейро-агентами ВКонтакте на **PHP/Laravel 11** с полной SSL защитой.
 
 **🔐 Полная SSL изоляция: HTTPS + PostgreSQL SSL**
 
@@ -13,7 +13,7 @@
 ```bash
 # Клонирование репозитория
 git clone <repository-url>
-cd project-root
+cd web-vk-bot
 
 # Запуск проекта
 docker compose up -d
@@ -26,7 +26,8 @@ docker compose logs -f
 ```
 
 **Доступ**:
-- Frontend: https://localhost:443 (HTTPS)
+- Frontend: https://lianium.ru (HTTPS)
+- Backend API: http://vk-backend:4000
 
 ---
 
@@ -61,43 +62,37 @@ crontab scripts/letsencrypt-crontab
 
 ### Основная
 - 📖 [API документация](docs/API.md)
-- 🚀 [Инструкция по деплою](docs/DEPLOYMENT.md)
-- 💳 [ЮMoney P2P интеграция](docs/YOOMONEY-P2P.md)
-- 🔐 [Let's Encrypt руководство](docs/LETSENCRYPT-SSL.md)
+- 🚀 [Руководство по развёртыванию](docs/DEPLOYMENT.md)
 
-### Дополнительные материалы
-- 📋 [Быстрый старт](docs/QUICKSTART.md)
-- 📊 [Отчёт о тестировании](docs/TEST-REPORT.md)
-- 📝 [История изменений](CHANGELOG.md)
+### Скрипты
+- 🚀 [init.sh](scripts/init.sh) - Инициализация проекта
+- 🔐 [generate-ssl-certs.sh](scripts/generate-ssl-certs.sh) - Генерация SSL
+- 📦 [deploy.sh](scripts/deploy.sh) - Деплой обновлений
+- 💾 [backup.sh](scripts/backup.sh) - Бэкап БД
+- 👤 [make-admin.sh](scripts/make-admin.sh) - Создание админа
 
 ---
 
 ## 🛠 Технологический стек
 
-### Backend
+### Backend API
 - **Runtime**: Node.js 20+
 - **Framework**: Express.js
 - **Language**: TypeScript
 - **Database ORM**: Prisma
-- **Database**: PostgreSQL (Supabase) с SSL
 - **Auth**: JWT, OAuth 2.0 (VK)
-- **Payments**: ЮKassa, ЮMoney P2P
 
-### Frontend
-- **Framework**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **UI Kit**: Material-UI (MUI)
-- **Styling**: TailwindCSS
-- **State**: Zustand
-- **Data Fetching**: TanStack Query (React Query)
-- **Routing**: React Router v6
+### Frontend (PHP)
+- **PHP**: 8.4-FPM
+- **Framework**: Laravel 11
+- **Database**: PostgreSQL (Supabase) с SSL
+- **Cache**: Redis
 - **Server**: Nginx с HTTPS/SSL
 
-### DevOps
+### Инфраструктура
 - **Container**: Docker + Docker Compose
 - **Database**: PostgreSQL (Supabase) с SSL
 - **Cache**: Redis
-- **Frontend**: Nginx с HTTPS
 - **Monitoring**: Watchtower
 
 ---
@@ -106,7 +101,8 @@ crontab scripts/letsencrypt-crontab
 
 - Docker 20+
 - Docker Compose 2+
-- Node.js 18+ (для локальной разработки)
+- Node.js 18+ (для backend API)
+- PHP 8.4+ (для Laravel)
 - OpenSSL (для генерации секретов)
 - VK Developers приложение (для OAuth)
 
@@ -114,7 +110,7 @@ crontab scripts/letsencrypt-crontab
 
 ## 🔧 Разработка
 
-### Backend разработка
+### Backend API разработка
 
 ```bash
 cd backend
@@ -122,35 +118,32 @@ cd backend
 # Установка зависимостей
 npm install
 
-# Генерация Prisma клиента при изменениях схемы
+# Генерация Prisma клиента
 npx prisma generate
 
-# Создание новой миграции
+# Создание миграции
 npx prisma migrate dev --name migration_name
 
-# Запуск в режиме разработки (с auto-reload)
+# Запуск в режиме разработки
 npm run dev
-
-# Запуск тестов
-npm test
 ```
 
-### Frontend разработка
+### Frontend (Laravel) разработка
 
 ```bash
-cd frontend
+cd frontend/php-app
 
 # Установка зависимостей
-npm install
+composer install
 
-# Запуск в режиме разработки (с hot-reload)
-npm run dev
+# Генерация ключа приложения
+php artisan key:generate
 
-# Сборка для production
-npm run build
+# Миграция БД
+php artisan migrate
 
-# Preview production сборки
-npm run preview
+# Запуск в режиме разработки
+php artisan serve
 ```
 
 ---
@@ -158,35 +151,38 @@ npm run preview
 ## 📊 Структура проекта
 
 ```
-project-root/
-├── docker-compose.yml          # Docker Compose (SSL enabled)
+web-vk-bot/
+├── docker-compose.yml          # Docker Compose
 ├── .env.example                # Шаблон переменных окружения
+├── README.md                   # Эта документация
 ├── frontend/
-│   ├── Dockerfile              # Nginx с SSL
-│   ├── nginx-ssl.conf          # SSL конфигурация Nginx
-│   ├── ssl/                    # SSL сертификаты
-│   └── public/                 # HTML страницы
+│   ├── php-app/                # Laravel 11 приложение
+│   │   ├── app/
+│   │   │   ├── Http/Controllers/
+│   │   │   ├── Models/
+│   │   │   └── Middleware/
+│   │   ├── resources/views/
+│   │   ├── routes/
+│   │   └── config/
+│   ├── nginx-php.conf          # Nginx конфиг для PHP
+│   └── public/
 ├── backend/
 │   ├── src/
-│   │   ├── config/             # Конфигурация (SSL settings)
-│   │   ├── routes/             # API endpoints
-│   │   └── services/           # Бизнес логика
+│   │   ├── config/
+│   │   ├── routes/
+│   │   └── services/
 │   └── prisma/
-│       └── schema.prisma       # Database schema
+│       └── schema.prisma
 ├── supabase/
-│   ├── Dockerfile              # PostgreSQL с SSL
-│   ├── ssl/                    # SSL сертификаты
 │   └── migrations/             # SQL миграции
 ├── scripts/
-│   ├── generate-ssl-certs.sh   # Генерация SSL сертификатов
-│   ├── get-letsencrypt-cert.sh # Получение Let's Encrypt
-│   ├── renew-letsencrypt-cert.sh # Обновление SSL
-│   └── backup.sh               # Бэкап БД
+│   ├── init.sh                 # Инициализация
+│   ├── generate-ssl-certs.sh   # Генерация SSL
+│   ├── get-letsencrypt-cert.sh # Let's Encrypt
+│   ├── backup.sh               # Бэкап БД
+│   └── make-admin.sh           # Создать админа
 └── docs/
-    ├── API.md                  # API документация
-    ├── DEPLOYMENT.md           # Инструкция по деплою
-    ├── LETSENCRYPT-SSL.md      # Let's Encrypt руководство
-    └── YOOMONEY-P2P.md         # ЮMoney интеграция
+    └── API.md                  # API документация
 ```
 
 ---
@@ -205,28 +201,87 @@ nano .env
 ```env
 # Database
 POSTGRES_PASSWORD=your_password
-JWT_SECRET=your_secret
+DATABASE_URL=postgresql://postgres:password@supabase:5432/vk_bot
 
 # VK OAuth
-VK_CLIENT_ID=your_client_id
-VK_CLIENT_SECRET=your_client_secret
-VK_REDIRECT_URI=https://yourdomain.com
+VK_CLIENT_ID=54514184
+VK_CLIENT_SECRET=your_secret
+VK_REDIRECT_URI=https://lianium.ru
 
-# Payments
-YOOKASSA_SHOP_ID=your_shop_id
-YOOKASSA_SECRET_KEY=your_secret_key
+# Application
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://lianium.ru
 
-# SSL
-DATABASE_SSL_ENABLED=true
-DATABASE_SSL_REJECT_UNAUTHORIZED=false
+# Session
+SESSION_DRIVER=file
+
+# Redis
+REDIS_PASSWORD=your_redis_password
 ```
 
 ---
 
-## 📞 Поддержка
+## 👤 Администрирование
 
-- GitHub Issues: Для багов и feature requests
-- Email: support@yourdomain.com
+### Создать админа
+
+```bash
+# Скрипт создания админа
+./scripts/make-admin.sh
+
+# Введите данные:
+# - Email
+# - Пароль
+# - Имя пользователя
+# - Роль (superadmin)
+```
+
+### Управление пользователями
+
+**Через админ-панель**:
+1. Войдите как superadmin
+2. `/admin/users` - список пользователей
+3. Редактирование, блокировка, смена роли
+
+### Настройки системы
+
+**Через админ-панель**:
+1. `/admin/settings` - настройки системы
+2. Включение/отключение регистрации
+3. Управление платёжными методами
+
+---
+
+## 💳 Платёжные методы
+
+Настройка через админ-панель (`/admin/payment-methods`):
+
+- **YooMoney P2P** - P2P переводы
+- **Банковская карта** - эквайринг
+- **СБП (QR)** - система быстрых платежей
+- **Криптовалюта** - USDT, BTC, ETH
+
+**API ключи шифруются** перед сохранением в БД!
+
+---
+
+## 🔒 Безопасность
+
+### Пароли
+- ✅ Хеширование bcrypt
+- ✅ Минимум 6 символов
+- ✅ Проверка сложности
+
+### Сессии
+- ✅ Laravel session cookies
+- ✅ CSRF защита
+- ✅ Secure cookies (HTTPS only)
+
+### API
+- ✅ JWT токены
+- ✅ Rate limiting
+- ✅ CORS настройки
 
 ---
 
@@ -236,5 +291,5 @@ MIT
 
 ---
 
-*Версия: 1.2.0 | Дата: 29 марта 2026*  
-*Статус: ✅ Полная SSL защита*
+*Версия: 2.0.0 | Дата: 30 марта 2026*  
+*Статус: ✅ PHP/Laravel 11 + Полная SSL защита*
