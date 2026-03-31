@@ -20,21 +20,46 @@ export interface VKIDUserInfo {
   email?: string;
 }
 
+export interface VKIDAuthRequest {
+  code: string;
+  device_id: string;
+  code_verifier?: string;
+}
+
 export const vkidAuthService = {
-  async exchangeCode(code: string, device_id: string): Promise<VKIDTokenResponse> {
+  async exchangeCode(code: string, device_id: string, code_verifier?: string): Promise<VKIDTokenResponse> {
+    // Для бизнес-аккаунтов используем Service Token
+    const headers: any = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    // Если есть Service Token (для бизнес-аккаунтов)
+    if (config.VK_SERVICE_TOKEN) {
+      headers['Authorization'] = `Bearer ${config.VK_SERVICE_TOKEN}`;
+    }
+
+    const params: any = {
+      client_id: config.VK_CLIENT_ID,
+      redirect_uri: config.VK_REDIRECT_URI,
+      code,
+      device_id,
+      grant_type: 'authorization_code',
+    };
+
+    // Добавляем code_verifier если есть (PKCE)
+    if (code_verifier) {
+      params.code_verifier = code_verifier;
+    }
+
+    // Если нет Service Token, используем client_secret (для обычных аккаунтов)
+    if (!config.VK_SERVICE_TOKEN && config.VK_CLIENT_SECRET) {
+      params.client_secret = config.VK_CLIENT_SECRET;
+    }
+
     const response = await axios.post<VKIDTokenResponse>(
       'https://id.vk.com/oauth2/auth',
-      null,
-      {
-        params: {
-          client_id: config.VK_CLIENT_ID,
-          client_secret: config.VK_CLIENT_SECRET,
-          redirect_uri: config.VK_REDIRECT_URI,
-          code,
-          device_id,
-          grant_type: 'authorization_code',
-        },
-      }
+      new URLSearchParams(params),
+      { headers }
     );
     return response.data;
   },
@@ -51,72 +76,27 @@ export const vkidAuthService = {
     return response.data;
   },
 
-  async loginWithVKID(code: string, device_id: string) {
-    // Обмен кода на токен
-    const tokenResponse = await this.exchangeCode(code, device_id);
-    
-    // Получение информации о пользователе
-    const userInfo = await this.getUserInfo(tokenResponse.access_token);
-    
-    // VK ID может вернуть id как number или string
-    const vkId = userInfo.id || tokenResponse.user_id;
-    
-    if (!vkId) {
-      throw new AppError('Failed to get user ID from VK', 400);
-    }
-    
-    // Поиск или создание пользователя
+  async findOrCreateUser(vkUserInfo: VKIDUserInfo) {
     let user = await prisma.user.findUnique({
-      where: { vkId: BigInt(vkId) },
+      where: { vk_id: vkUserInfo.id },
     });
 
     if (!user) {
-      // Создание нового пользователя
       user = await prisma.user.create({
         data: {
-          vkId: BigInt(vkId),
-          username: userInfo.name || `${userInfo.first_name || ''} ${userInfo.last_name || ''}`.trim() || `user_${vkId}`,
-          firstName: userInfo.first_name,
-          lastName: userInfo.last_name,
-          avatarUrl: userInfo.avatar,
-          email: userInfo.email || tokenResponse.email,
+          vk_id: vkUserInfo.id,
+          email: vkUserInfo.email || `${vkUserInfo.id}@vkid.local`,
+          username: `${vkUserInfo.first_name || ''} ${vkUserInfo.last_name || ''}`.trim() || `vk_user_${vkUserInfo.id}`,
+          first_name: vkUserInfo.first_name,
+          last_name: vkUserInfo.last_name,
+          avatar_url: vkUserInfo.avatar,
           role: 'user',
+          is_active: true,
+          is_blocked: false,
         },
       });
     }
 
-    if (user.isBlocked) {
-      throw new AppError('User is blocked', 403);
-    }
-
-    if (!user.isActive) {
-      throw new AppError('User is not active', 403);
-    }
-
-    // Генерация токенов
-    const tokens = this.generateTokens(user.id, user.role);
-
-    return {
-      user: {
-        id: user.id,
-        vkId: user.vkId!.toString(),
-        username: user.username!,
-        email: user.email,
-        role: user.role,
-        avatarUrl: user.avatarUrl,
-      },
-      tokens,
-    };
-  },
-
-  generateTokens(userId: string, role: string) {
-    const accessToken = generateAccessToken({ id: userId, role });
-    const refreshToken = generateRefreshToken({ id: userId, role });
-    
-    return {
-      accessToken,
-      refreshToken,
-      expiresIn: 3600,
-    };
+    return user;
   },
 };

@@ -29,17 +29,11 @@ const registerSchema = z.object({
   }),
 });
 
-const emailLoginSchema = z.object({
-  body: z.object({
-    email: z.string().email('Invalid email'),
-    password: z.string().min(1, 'Password is required'),
-  }),
-});
-
 const vkidLoginSchema = z.object({
   body: z.object({
     code: z.string().min(1, 'Code is required'),
     device_id: z.string().min(1, 'Device ID is required'),
+    code_verifier: z.string().optional(),
   }),
 });
 
@@ -48,41 +42,73 @@ router.post('/vk', validateRequest(loginSchema), async (req, res, next) => {
   try {
     const { code } = req.body;
     const result = await authService.loginWithVK(code);
-    
-    res.json({
-      success: true,
-      data: result,
-    });
+    res.json(result);
   } catch (error) {
     next(error);
   }
 });
 
-// POST /api/auth/register - Register with email
+// POST /api/auth/vkid - Login via VK ID
+router.post('/vkid', validateRequest(vkidLoginSchema), async (req, res, next) => {
+  try {
+    const { code, device_id, code_verifier } = req.body;
+    
+    // Обмен кода на токены с PKCE support
+    const tokenData = await vkidAuthService.exchangeCode(code, device_id, code_verifier);
+    
+    // Получаем информацию о пользователе
+    const userInfo = await vkidAuthService.getUserInfo(tokenData.access_token);
+    
+    // Находим или создаём пользователя
+    const user = await vkidAuthService.findOrCreateUser(userInfo);
+    
+    // Генерируем JWT токены
+    const accessToken = generateAccessToken({
+      userId: user.id,
+      email: user.email,
+      vkId: user.vk_id,
+    });
+    
+    const refreshToken = generateRefreshToken({
+      userId: user.id,
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          vk_id: user.vk_id,
+          role: user.role,
+        },
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      },
+    });
+  } catch (error) {
+    console.error('VK ID Login Error:', error);
+    next(error);
+  }
+});
+
+// POST /api/auth/login - Email/Password login
+router.post('/login', validateRequest(loginSchema), async (req, res, next) => {
+  try {
+    const { code } = req.body;
+    const result = await emailAuthService.login(code);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/auth/register - Registration
 router.post('/register', validateRequest(registerSchema), async (req, res, next) => {
   try {
-    const { email, password, username } = req.body;
-    const result = await emailAuthService.register({ email, password, username });
-    
-    res.status(201).json({
-      success: true,
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// POST /api/auth/login - Login with email
-router.post('/login', validateRequest(emailLoginSchema), async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const result = await emailAuthService.login({ email, password });
-    
-    res.json({
-      success: true,
-      data: result,
-    });
+    const result = await emailAuthService.register(req.body);
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -92,12 +118,8 @@ router.post('/login', validateRequest(emailLoginSchema), async (req, res, next) 
 router.post('/refresh', validateRequest(refreshSchema), async (req, res, next) => {
   try {
     const { refresh_token } = req.body;
-    const tokens = await authService.refreshToken(refresh_token);
-    
-    res.json({
-      success: true,
-      data: tokens,
-    });
+    const result = await authService.refreshToken(refresh_token);
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -106,17 +128,8 @@ router.post('/refresh', validateRequest(refreshSchema), async (req, res, next) =
 // POST /api/auth/logout - Logout
 router.post('/logout', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.split(' ')[1];
-    
-    if (token) {
-      await authService.logout(token);
-    }
-    
-    res.json({
-      success: true,
-      message: 'Logged out successfully',
-    });
+    await authService.logout(req.user!.id);
+    res.json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
     next(error);
   }
@@ -125,54 +138,8 @@ router.post('/logout', authMiddleware, async (req: AuthRequest, res, next) => {
 // GET /api/auth/me - Get current user
 router.get('/me', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
-    const prisma = (await import('../../lib/prisma.js')).default;
-    
-    const user = await prisma.user.findUnique({
-      where: { id: req.user!.id },
-      select: {
-        id: true,
-        vkId: true,
-        username: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        avatarUrl: true,
-        role: true,
-        balance: true,
-        isActive: true,
-        createdAt: true,
-      },
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: { code: 'NOT_FOUND', message: 'User not found' },
-      });
-    }
-
-    res.json({
-      success: true,
-      data: {
-        ...user,
-        vkId: user.vkId?.toString(),
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// POST /api/auth/vkid - Login via VK ID
-router.post('/vkid', validateRequest(vkidLoginSchema), async (req, res, next) => {
-  try {
-    const { code, device_id } = req.body;
-    const result = await vkidAuthService.loginWithVKID(code, device_id);
-    
-    res.json({
-      success: true,
-      data: result,
-    });
+    const user = await authService.getCurrentUser(req.user!.id);
+    res.json({ success: true, data: user });
   } catch (error) {
     next(error);
   }

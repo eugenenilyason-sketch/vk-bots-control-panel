@@ -38,6 +38,8 @@
             @endif
             
             <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
+<!-- VK ID Button -->
+@include('components.vkid-button')
         </form>
 
         <div style="margin: 24px 0; position: relative; text-align: center;">
@@ -45,7 +47,7 @@
             <span style="background: white; padding: 0 16px; color: var(--text-muted); font-size: 13px; position: relative;">ИЛИ</span>
         </div>
 
-        <a href="https://oauth.vk.com/authorize?client_id=54514184&redirect_uri=https%3A%2F%2F{{ urlencode(config('app.url', 'https://yourdomain.com')) }}&response_type=code&scope=messages,groups,offline" class="btn btn-vk" style="display: block; text-align: center; text-decoration: none;">
+        <a href="https://oauth.vk.com/authorize?client_id=54514184&redirect_uri={{ urlencode(env('VK_REDIRECT_URI', 'https://lianium.ru')) }}&response_type=code&scope=messages,groups,offline" class="btn btn-vk" style="display: block; text-align: center; text-decoration: none;">
             Войти через VK
         </a>
 
