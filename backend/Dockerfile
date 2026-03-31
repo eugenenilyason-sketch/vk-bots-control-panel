@@ -1,14 +1,12 @@
 # Backend Dockerfile - VK Neuro-Agents API
-FROM node:20-alpine
+# Используем образ с предустановленными пакетами
+FROM node:20-alpine3.18
 
 WORKDIR /app
 
-# Install system dependencies
-# Используем российские зеркала для стабильности
-RUN echo "http://mirror.yandex.ru/alpine/v3.19/main" > /etc/apk/repositories && \
-    echo "http://mirror.yandex.ru/alpine/v3.19/community" >> /etc/apk/repositories && \
-    apk update && \
-    apk add --no-cache openssl curl
+# Пакеты уже включены в node:20-alpine3.18
+# Если нужны дополнительные, раскомментировать:
+# RUN apk add --no-cache openssl curl
 
 # Copy package files
 COPY package*.json ./
