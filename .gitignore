@@ -31,7 +31,13 @@ docs/*.md
 !docs/API.md
 !docs/DEPLOYMENT.md
 
-# Logs
+# Dev/Technical Scripts
+scripts/install-devtools.sh
+scripts/generate-ssl-certs.sh
+scripts/start.sh
+scripts/start-docker.sh
+scripts/test-scrape.py
+scripts/letsencrypt-crontab
 logs/
 *.log
 npm-debug.log*
