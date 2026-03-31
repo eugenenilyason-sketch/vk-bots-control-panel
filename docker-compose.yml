@@ -9,6 +9,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./frontend/php-app:/var/www/html
+      - php_vendor:/var/www/html/vendor
     networks:
       - vk-bot-network
     depends_on:
@@ -141,3 +142,4 @@ networks:
 volumes:
   supabase_data:
   redis_data:
+  php_vendor:
