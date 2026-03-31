@@ -11,8 +11,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install all dependencies (including dev for tsx)
-RUN npm ci
+# Install dependencies (npm install работает без package-lock.json)
+RUN npm install --omit=dev
 
 # Copy source code
 COPY . .
