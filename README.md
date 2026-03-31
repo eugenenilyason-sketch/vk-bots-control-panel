@@ -172,37 +172,64 @@ php artisan serve
 
 ```
 web-vk-bot/
-├── docker-compose.yml          # Docker Compose
-├── .env.example                # Шаблон переменных окружения
-├── README.md                   # Эта документация
-├── frontend/
-│   ├── php-app/                # Laravel 11 приложение
+├── 📄 docker-compose.yml       # Docker конфигурация
+├── 📄 .env.example             # Шаблон переменных окружения
+├── 📄 README.md                # Документация
+│
+├── 📂 frontend/                # Laravel 11 приложение
+│   ├── php-app/
 │   │   ├── app/
-│   │   │   ├── Http/Controllers/
-│   │   │   ├── Models/
-│   │   │   └── Middleware/
-│   │   ├── resources/views/
-│   │   ├── routes/
-│   │   └── config/
-│   ├── nginx-php.conf          # Nginx конфиг для PHP
+│   │   │   ├── Http/
+│   │   │   │   ├── Controllers/    # Контроллеры
+│   │   │   │   └── Middleware/     # Middleware
+│   │   │   └── Models/             # Модели Eloquent
+│   │   ├── config/                 # Конфигурация Laravel
+│   │   ├── database/
+│   │   │   └── migrations/         # Миграции БД
+│   │   ├── resources/
+│   │   │   └── views/              # Blade шаблоны
+│   │   └── routes/
+│   │       └── web.php             # Маршруты
+│   ├── nginx-php.conf              # Nginx конфигурация
 │   └── public/
-├── backend/
+│       ├── index.html              # Страница входа
+│       └── styles.css              # Глобальные стили
+│
+├── 📂 backend/                 # Node.js API
 │   ├── src/
-│   │   ├── config/
-│   │   ├── routes/
+│   │   ├── config/             # Конфигурация
+│   │   ├── routes/             # API маршруты
 │   │   └── services/
+│   │       └── auth/           # Сервисы аутентификации
 │   └── prisma/
-│       └── schema.prisma
-├── supabase/
+│       ├── schema.prisma       # Prisma схема
+│       └── migrations/         # Prisma миграции
+│
+├── 📂 supabase/                # PostgreSQL
 │   └── migrations/             # SQL миграции
-├── scripts/
-│   ├── init.sh                 # Инициализация
-│   ├── generate-ssl-certs.sh   # Генерация SSL
-│   ├── get-letsencrypt-cert.sh # Let's Encrypt
+│
+├── 📂 scripts/                 # Скрипты развёртывания
+│   ├── init.sh                 # Инициализация проекта
+│   ├── deploy.sh               # Деплой обновлений
 │   ├── backup.sh               # Бэкап БД
-│   └── make-admin.sh           # Создать админа
-└── docs/
-    └── API.md                  # API документация
+│   ├── make-admin.sh           # Создание админа
+│   ├── get-letsencrypt-cert.sh # SSL сертификаты
+│   └── renew-letsencrypt-cert.sh # Обновление SSL
+│
+└── 📂 docs/                    # Документация
+    ├── API.md                  # API документация
+    └── DEPLOYMENT.md           # Руководство по развёртыванию
+```
+
+**⚠️  Не публикуется на GitHub** (в .gitignore):
+```
+❌ .env                       # Реальные секреты
+❌ ssl/                       # SSL сертификаты
+❌ backups/                   # Бэкапы БД
+❌ logs/                      # Логи
+❌ node_modules/              # Зависимости
+❌ vendor/                    # PHP зависимости
+❌ storage/                   # Laravel storage
 ```
 
 ---
