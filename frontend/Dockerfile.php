@@ -19,8 +19,9 @@ RUN docker-php-ext-install pdo pdo_pgsql pgsql
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Настройка рабочего каталога
+# Настройка рабочего каталога и создание vendor
 WORKDIR /var/www/html
+RUN mkdir -p /var/www/html/vendor && chown -R www-data:www-data /var/www/html
 
 # Переключение на пользователя www-data
 USER www-data
