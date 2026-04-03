@@ -5,6 +5,7 @@ import { emailAuthService } from '../services/auth/email-auth.service';
 import { vkidAuthService } from '../services/auth/vkid-auth.service';
 import { authMiddleware } from '../middleware/authMiddleware';
 import { validateRequest } from '../middleware/validateRequest';
+import { AppError } from '../middleware/errorHandler';
 import { z } from 'zod';
 import { AuthRequest } from '../middleware/authMiddleware';
 
@@ -60,9 +61,9 @@ router.post('/vk', validateRequest(loginSchema), async (req, res, next) => {
 router.post('/vkid', validateRequest(vkidLoginSchema), async (req, res, next) => {
   try {
     const { code, device_id, code_verifier, access_token, user_id } = req.body;
-    
+
     let userInfo;
-    
+
     // Если есть access_token - используем его (frontend уже обменял код)
     if (access_token && user_id) {
       console.log('🔑 Using access_token from frontend');
@@ -72,7 +73,7 @@ router.post('/vkid', validateRequest(vkidLoginSchema), async (req, res, next) =>
         name: '',
         avatar: '',
       };
-    } 
+    }
     // Если есть code - обмениваем на токены
     else if (code && device_id) {
       console.log('🔄 Exchanging code for tokens');
@@ -82,21 +83,23 @@ router.post('/vkid', validateRequest(vkidLoginSchema), async (req, res, next) =>
     else {
       throw new AppError('No access_token or code provided', 400);
     }
-    
+
     // Находим или создаём пользователя
     const user = await vkidAuthService.findOrCreateUser(userInfo);
-    
+
     // Генерируем JWT токены
     const accessToken = generateAccessToken({
       userId: user.id,
       email: user.email,
       vkId: user.vk_id,
     });
-    
+
     const refreshToken = generateRefreshToken({
       userId: user.id,
     });
-    
+
+    console.log('✅ VK ID login successful:', { userId: user.id, vk_id: user.vk_id });
+
     res.json({
       success: true,
       data: {
@@ -112,8 +115,15 @@ router.post('/vkid', validateRequest(vkidLoginSchema), async (req, res, next) =>
       },
     });
   } catch (error) {
-    console.error('VK ID Login Error:', error);
-    next(error);
+    console.error('❌ VK ID Login Error:', error);
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      next(error);
+    }
   }
 });
 

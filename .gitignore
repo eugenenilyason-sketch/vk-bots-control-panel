@@ -92,6 +92,19 @@ nginx/letsencrypt/
 # SENSITIVE DATA - НЕ ДЛЯ ПУБЛИЧНОГО ДОСТУПА
 # ============================================
 
+# Environment files (ALL .env files except .env.example)
+.env
+!.env.example
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+frontend/php-app/.env
+!frontend/php-app/.env.example
+backend/.env
+!backend/.env.example
+
 # Database Files
 *.db
 *.sqlite
@@ -105,16 +118,10 @@ backup_*.sql
 # Logs
 *.log
 logs/
+backend/logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Environment (real, not example)
-.env
-.env.local
-.env.*.local
-.env.production
-.env.development
 
 # SSL/TLS Certificates
 *.crt
@@ -127,6 +134,9 @@ ssl/
 certs/
 keys/
 letsencrypt/
+frontend/ssl/
+nginx/ssl/
+nginx/letsencrypt/
 
 # IDE / Editor
 .idea/
@@ -144,6 +154,8 @@ build/
 out/
 node_modules/
 vendor/
+frontend/php-app/vendor/
+backend/node_modules/
 
 # Cache
 .cache/
@@ -154,6 +166,8 @@ storage/framework/cache/
 storage/framework/sessions/
 storage/framework/views/
 storage/logs/
+frontend/php-app/storage/
+frontend/php-app/bootstrap/cache/
 
 # Testing
 coverage/
@@ -165,20 +179,3 @@ coverage/
 *.temp
 dev-data/
 test-data/
-frontend/php-app/storage/
-frontend/php-app/bootstrap/cache/
-frontend/nginx-ssl.conf
-frontend/public/slideout.min.js
-frontend/setup-laravel.sh
-frontend/php-app/resources/css/
-frontend/php-app/resources/js/
-frontend/php-app/tailwind.config.js
-frontend/php-app/vite.config.js
-frontend/php-app/tests/
-
-# Test artifacts
-tests/e2e/node_modules/
-tests/e2e/screenshots/
-tests/e2e/videos/
-tests/e2e/test-results/
-tests/e2e/playwright-report/

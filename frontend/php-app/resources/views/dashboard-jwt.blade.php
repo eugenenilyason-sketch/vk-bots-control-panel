@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard - VK Neuro-Agents</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
@@ -61,30 +62,30 @@
 
     <script>
         let hasError = false;
-        
+
         // Проверка токена при загрузке
         document.addEventListener('DOMContentLoaded', async function() {
             // Получаем токен из URL или localStorage
             const urlParams = new URLSearchParams(window.location.search);
             let token = urlParams.get('token');
-            
+
             if (!token) {
                 token = localStorage.getItem('access_token');
             }
-            
+
             if (!token) {
                 // Нет токена - показываем ошибку
-                showError('Токен не найден. Пожалуйста, войдите через VK ID.');
+                showError('Токен не найден. Пожалуйста, войдите в систему.');
                 return;
             }
-            
+
             // Сохраняем токен (если из URL)
             if (urlParams.get('token')) {
                 localStorage.setItem('access_token', token);
                 // Очищаем URL от токена
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-            
+
             // Загружаем данные пользователя
             try {
                 const response = await fetch('/api/user/profile', {
@@ -93,17 +94,17 @@
                         'Content-Type': 'application/json'
                     }
                 });
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     showDashboard(data.data);
                 } else {
-                    const errorData = await response.json();
+                    const errorData = await response.json().catch(() => ({}));
                     showError('Ошибка: ' + (errorData.error?.message || 'Недействительный токен'));
                 }
             } catch (error) {
                 console.error('Error loading profile:', error);
-                showError('Ошибка соединения с сервером');
+                showError('Ошибка соединения с сервером. Проверьте подключение и попробуйте снова.');
             }
         });
         
@@ -131,9 +132,24 @@
         }
         
         function logoutAndRedirect() {
+            // Очищаем токены
             localStorage.removeItem('access_token');
             sessionStorage.removeItem('access_token');
-            window.location.href = '/';
+            
+            // Делаем настоящий logout через POST запрос
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/logout';
+            
+            // Добавляем CSRF токен
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            form.appendChild(csrfInput);
+            
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 </body>

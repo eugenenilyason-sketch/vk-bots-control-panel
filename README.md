@@ -120,6 +120,7 @@ crontab scripts/letsencrypt-crontab
 ### Основная
 - 📖 [API документация](docs/API.md)
 - 🚀 [Руководство по развёртыванию](docs/DEPLOYMENT.md)
+- 📱 [Настройка мобильной авторизации через VK ID](docs/MOBILE_VK_ID_AUTH.md)
 
 ### Скрипты
 - 🚀 [init.sh](scripts/init.sh) - Инициализация проекта

@@ -46,14 +46,15 @@ class JwtAuthMiddleware
             }
             
             $decoded = JWT::decode($token, new Key($secret, 'HS256'));
-            
+
             // Находим пользователя по userId из токена
-            $userId = $decoded->claims()->get('userId') ?? $decoded->userId ?? null;
-            
+            $payload = json_decode(json_encode($decoded), true);
+            $userId = $payload['userId'] ?? $decoded->userId ?? null;
+
             if (!$userId) {
-                throw new \Exception('Invalid token');
+                throw new \Exception('Invalid token: userId not found');
             }
-            
+
             $user = User::find($userId);
             
             if (!$user) {
