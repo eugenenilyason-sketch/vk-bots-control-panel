@@ -1,5 +1,5 @@
 {{-- VK ID Button - Mobile & Desktop Support --}}
-{{-- Используем Callback mode для всех устройств (Redirect mode не работает на мобильных) --}}
+{{-- На мобильных отключаем вход через приложение VK (не работает в браузере) --}}
 <div style="text-align: center; margin-top: 24px;" id="vkid-button-container">
     <script nonce="csp_nonce" src="https://unpkg.com/@vkid/sdk@2.6.5/dist-sdk/umd/index.js"></script>
     <script nonce="csp_nonce" type="text/javascript">
@@ -9,9 +9,10 @@
             console.log('✅ VKIDSDK loaded');
             const VKID = window.VKIDSDK;
 
-            // ВАЖНО: Используем Callback mode для ВСЕХ устройств
-            // Redirect mode не работает на мобильных — VK приложение не может вернуть управление браузеру
-            // Callback mode использует postMessage для передачи данных, что работает везде
+            // Определяем мобильное устройство
+            const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            console.log('📱 Is mobile:', isMobile);
+
             VKID.Config.init({
                 app: {{ config('services.vk.client_id', env('VK_CLIENT_ID')) }},
                 redirectUrl: '{{ config('services.vk.redirect_uri', env('VK_REDIRECT_URI', 'https://yourdomain.com')) }}',
@@ -20,20 +21,21 @@
                 scope: 'email,name,avatar',
             });
 
-            console.log('⚙️ Config initialized (Callback mode for all devices)');
+            console.log('⚙️ Config initialized');
 
             const oneTap = new VKID.OneTap();
             console.log('🎯 OneTap created');
 
+            // На мобильных отключаем кнопку "Войти через приложение VK"
+            // VK приложение не может вернуть управление в мобильный браузер
             oneTap.render({
                 container: document.currentScript.parentElement,
-                showAlternativeLogin: true
+                showAlternativeLogin: !isMobile // false на мобильных, true на десктопе
             })
             .on(VKID.WidgetEvents.ERROR, function(error) {
                 console.error('❌ VK ID Error:', error);
                 console.error('Error details:', JSON.stringify(error));
                 
-                // Показываем пользователю понятное сообщение
                 let errorMsg = 'Ошибка VK ID';
                 if (error.error_description) {
                     errorMsg += ': ' + error.error_description;
@@ -41,13 +43,7 @@
                     errorMsg += ': ' + error.message;
                 }
                 
-                // На мобильных показываем альтернативу
-                const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                if (isMobile) {
-                    showMobileFallback(errorMsg);
-                } else {
-                    alert(errorMsg);
-                }
+                alert(errorMsg);
             })
             .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, async function (payload) {
                 console.log('✅ LOGIN_SUCCESS event received');
@@ -208,7 +204,6 @@
          * Скрыть индикатор загрузки
          */
         function hideLoading() {
-            // Перезагружаем страницу для восстановления кнопки
             setTimeout(() => location.reload(), 1000);
         }
 
@@ -221,10 +216,10 @@
                 container.innerHTML = `
                     <div style="margin-top: 16px; padding: 16px; background: var(--card-bg, #1a1a2e); border-radius: 8px; border: 1px solid var(--border-color, #333);">
                         <p style="margin: 0 0 8px 0; font-size: 14px; color: var(--text-muted, #888);">
-                            ⚠️ ${errorMsg || 'Вход через приложение VK не работает'}
+                            ⚠️ ${errorMsg || 'Вход через VK недоступен'}
                         </p>
                         <p style="margin: 0; font-size: 13px; color: var(--text-secondary, #666);">
-                            Используйте вход через email/пароль или откройте сайт в десктопном браузере
+                            Используйте вход через email/пароль
                         </p>
                     </div>
                 `;
