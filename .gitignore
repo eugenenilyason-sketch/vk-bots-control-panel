@@ -34,8 +34,6 @@ docs/*.md
 # Dev/Technical Scripts
 scripts/install-devtools.sh
 scripts/generate-ssl-certs.sh
-scripts/start.sh
-scripts/start-docker.sh
 scripts/test-scrape.py
 scripts/letsencrypt-crontab
 logs/
@@ -177,3 +175,10 @@ frontend/php-app/resources/js/
 frontend/php-app/tailwind.config.js
 frontend/php-app/vite.config.js
 frontend/php-app/tests/
+
+# Test artifacts
+tests/e2e/node_modules/
+tests/e2e/screenshots/
+tests/e2e/videos/
+tests/e2e/test-results/
+tests/e2e/playwright-report/

@@ -8,7 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-// Guest routes
+// Guest routes (login/register)
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -16,10 +16,13 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// Authenticated routes
+// Dashboard - JWT based (no Laravel middleware)
+Route::get('/dashboard', function() {
+    return view('dashboard-jwt');
+})->name('dashboard');
+
+// Authenticated routes (Laravel auth)
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
     // Bots - CRUD
     Route::get('/bots', [BotController::class, 'index'])->name('bots.index');
     Route::get('/bots/create', [BotController::class, 'create'])->name('bots.create');

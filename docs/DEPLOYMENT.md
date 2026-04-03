@@ -83,8 +83,8 @@ POSTGRES_PASSWORD=ваш_пароль
 DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@supabase:5432/vk_bot
 
 # VK OAuth
-VK_CLIENT_ID=54514184
-VK_CLIENT_SECRET=ваш_secret
+VK_CLIENT_ID=your_vk_client_id
+VK_CLIENT_SECRET=your_vk_client_secret
 VK_REDIRECT_URI=https://yourdomain.com
 
 # Application
@@ -159,7 +159,7 @@ Redirect URI: https://yourdomain.com
 ### 3. Получение ключей
 
 ```
-Client ID: 54514184
+Client ID: (ваш VK Client ID)
 Client Secret: (скопируйте)
 ```
 

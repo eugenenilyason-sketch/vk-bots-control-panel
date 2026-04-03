@@ -17,25 +17,43 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const authHeader = req.headers.authorization;
+    let token: string | undefined;
     
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Пробуем получить токен из заголовка Authorization
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1];
+    }
+    // Или из cookie
+    else if (req.cookies && req.cookies.access_token) {
+      token = req.cookies.access_token;
+    }
+    
+    if (!token) {
       throw new AppError('Unauthorized', 401);
     }
-
-    const token = authHeader.split(' ')[1];
     
     const decoded = jwt.verify(token, config.JWT_SECRET) as {
-      id: string;
+      id?: string;
+      userId?: string;
       vkId?: string;
-      role: string;
+      role?: string;
     };
 
-    req.user = {
-      id: decoded.id,
+    console.log('🔑 Decoded JWT:', decoded);
+    console.log('🔑 Setting user:', {
+      id: decoded.userId || decoded.id || '',
       vkId: decoded.vkId ? BigInt(decoded.vkId) : undefined,
-      role: decoded.role,
+      role: decoded.role || 'user',
+    });
+
+    req.user = {
+      id: decoded.userId || decoded.id || '',
+      vkId: decoded.vkId ? BigInt(decoded.vkId) : undefined,
+      role: decoded.role || 'user',
     };
+
+    console.log('✅ User set:', req.user);
 
     next();
   } catch (error) {

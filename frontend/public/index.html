@@ -149,7 +149,8 @@
     
     // Ручной вход через VK
     function manualVKLogin() {
-      const authUrl = `https://oauth.vk.com/authorize?client_id=54514184&redirect_uri=${encodeURIComponent(window.location.origin)}&response_type=code&scope=messages,groups,offline`;
+      const clientId = '{{VK_CLIENT_ID}}'; // Заменяется при деплое
+      const authUrl = `https://oauth.vk.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(window.location.origin)}&response_type=code&scope=messages,groups,offline`;
       window.location.href = authUrl;
     }
 

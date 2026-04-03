@@ -1,0 +1,15 @@
+{
+  "name": "backend-tests",
+  "version": "1.0.0",
+  "description": "Backend authorization tests for VK Neuro-Agents",
+  "main": "auth.test.js",
+  "scripts": {
+    "test:auth": "node auth.test.js",
+    "test:jwt": "node jwt.test.js",
+    "test": "npm run test:auth && npm run test:jwt"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

@@ -107,10 +107,12 @@ router.post('/create', authMiddleware, validateRequest(createPaymentSchema), asy
         success: true,
         data: {
           paymentId: payment.id,
-          accountNumber: yoomoney?.accountNumber || '41001XXXXXXXXXXXX',
+          accountNumber: yoomoney?.accountNumber || null,
           amount,
           status: 'pending',
-          instruction: `Переведите ${amount}₽ на счёт ЮMoney: ${yoomoney?.accountNumber || '41001XXXXXXXXXXXX'}`,
+          instruction: yoomoney?.accountNumber
+            ? `Переведите ${amount}₽ на счёт ЮMoney: ${yoomoney.accountNumber}`
+            : 'Платёжный метод не настроен. Обратитесь к администратору.',
         },
       });
     }

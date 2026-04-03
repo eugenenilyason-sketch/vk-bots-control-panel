@@ -8,13 +8,13 @@
 
 ## 📋 О проекте
 
-VK Neuro-Agents — это панель управления для создания и управления ботами ВКонтакте с интеграцией платёжных систем.
+VK Neuro-Agents — это панель управления для создания и управления ботами ВКонтакте с интеграцией платёжных систем и авторизацией через VK ID.
 
 ### 🔑 Возможности
 
 | Раздел | Функции |
 |--------|---------|
-| **👤 Аутентификация** | Вход через Email/пароль, VK OAuth |
+| **👤 Аутентификация** | Вход через Email/пароль, VK ID OAuth |
 | **🤖 Боты** | Создание, редактирование, запуск/остановка ботов |
 | **💳 Платежи** | История платежей, пополнение баланса, платёжные методы |
 | **⚙️ Настройки** | Профиль, смена пароля |
@@ -49,27 +49,32 @@ VK Neuro-Agents — это панель управления для создан
 | RAM: 4 GB | RAM: 8 GB |
 | Disk: 20 GB | Disk: 50 GB SSD |
 | Docker: 20+ | Docker Compose: 2+ |
+| OpenSSL | Для генерации секретов |
 
 ### 🐳 Запуск в Docker
 
 ```bash
 # 1. Клонирование репозитория
-git clone https://github.com/eugenenilyason-sketch/vk-bots-control-panel.git
-cd vk-bots-control-panel
+git clone https://github.com/YOUR_USERNAME/vk-neuro-agents.git
+cd vk-neuro-agents
 
 # 2. Инициализация (создание .env и генерация секретов)
 ./scripts/init.sh
 
-# 3. Запуск проекта
+# 3. Настройка переменных окружения
+nano .env
+# Укажите VK_CLIENT_ID, VK_CLIENT_SECRET, VK_REDIRECT_URI и другие
+
+# 4. Запуск проекта
 docker compose up -d
 
-# 4. Создание админа
+# 5. Создание админа
 ./scripts/make-admin.sh admin@yourdomain.com superadmin
 
-# 5. Проверка статуса
+# 6. Проверка статуса
 docker compose ps
 
-# 6. Просмотр логов
+# 7. Просмотр логов
 docker compose logs -f
 ```
 
@@ -305,12 +310,15 @@ nano .env
 
 ```env
 # Database
-POSTGRES_PASSWORD=your_password
-DATABASE_URL=postgresql://postgres:password@supabase:5432/vk_bot
+POSTGRES_PASSWORD=your_secure_password
+DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@supabase:5432/vk_bot
 
-# VK OAuth
-VK_CLIENT_ID=54514184
-VK_CLIENT_SECRET=your_secret
+# JWT
+JWT_SECRET=your_secure_jwt_secret
+
+# VK ID OAuth
+VK_CLIENT_ID=your_vk_client_id
+VK_CLIENT_SECRET=your_vk_client_secret
 VK_REDIRECT_URI=https://yourdomain.com
 
 # Application
@@ -322,7 +330,10 @@ APP_URL=https://yourdomain.com
 SESSION_DRIVER=file
 
 # Redis
-REDIS_PASSWORD=your_redis_password
+REDIS_PASSWORD=your_secure_redis_password
+```
+
+> **Важно**: Все секреты генерируются автоматически при запуске `./scripts/init.sh`. Вам нужно указать только VK credentials.
 ```
 
 ---

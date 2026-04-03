@@ -8,16 +8,16 @@ const configSchema = z.object({
   PORT: z.string().default('4000'),
   DATABASE_URL: z.string(),
   JWT_SECRET: z.string(),
-  VK_CLIENT_ID: z.string().optional().default('dev_client_id'),
-  VK_CLIENT_SECRET: z.string().optional().default('dev_client_secret'),
+  VK_CLIENT_ID: z.string(),
+  VK_CLIENT_SECRET: z.string(),
   VK_SERVICE_TOKEN: z.string().optional(),
-  VK_REDIRECT_URI: z.string().optional().default('https://lianium.ru'),
+  VK_REDIRECT_URI: z.string(),
   YOOKASSA_SHOP_ID: z.string().optional(),
   YOOKASSA_SECRET_KEY: z.string().optional(),
   YOOMONEY_ACCOUNT_NUMBER: z.string().optional(),
   YOOMONEY_API_KEY: z.string().optional(),
   REDIS_PASSWORD: z.string(),
-  FRONTEND_URL: z.string().default('https://lianium.ru'),
+  FRONTEND_URL: z.string(),
 });
 
 export type Config = z.infer<typeof configSchema>;

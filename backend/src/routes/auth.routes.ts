@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { generateAccessToken, generateRefreshToken } from '../lib/jwt';
 import { authService } from '../services/auth.service';
 import { emailAuthService } from '../services/auth/email-auth.service';
 import { vkidAuthService } from '../services/auth/vkid-auth.service';
@@ -31,9 +32,16 @@ const registerSchema = z.object({
 
 const vkidLoginSchema = z.object({
   body: z.object({
-    code: z.string().min(1, 'Code is required'),
-    device_id: z.string().min(1, 'Device ID is required'),
+    access_token: z.string().optional(),
+    user_id: z.string().optional(),
+    code: z.string().optional(),
+    device_id: z.string().optional(),
     code_verifier: z.string().optional(),
+  }).refine(data => {
+    // Требуется либо access_token+user_id, либо code+device_id
+    return (data.access_token && data.user_id) || (data.code && data.device_id);
+  }, {
+    message: 'Either access_token+user_id or code+device_id must be provided',
   }),
 });
 
@@ -51,13 +59,29 @@ router.post('/vk', validateRequest(loginSchema), async (req, res, next) => {
 // POST /api/auth/vkid - Login via VK ID
 router.post('/vkid', validateRequest(vkidLoginSchema), async (req, res, next) => {
   try {
-    const { code, device_id, code_verifier } = req.body;
+    const { code, device_id, code_verifier, access_token, user_id } = req.body;
     
-    // Обмен кода на токены с PKCE support
-    const tokenData = await vkidAuthService.exchangeCode(code, device_id, code_verifier);
+    let userInfo;
     
-    // Получаем информацию о пользователе
-    const userInfo = await vkidAuthService.getUserInfo(tokenData.access_token);
+    // Если есть access_token - используем его (frontend уже обменял код)
+    if (access_token && user_id) {
+      console.log('🔑 Using access_token from frontend');
+      userInfo = {
+        id: String(user_id),
+        email: '',
+        name: '',
+        avatar: '',
+      };
+    } 
+    // Если есть code - обмениваем на токены
+    else if (code && device_id) {
+      console.log('🔄 Exchanging code for tokens');
+      const tokenData = await vkidAuthService.exchangeCode(code, device_id, code_verifier);
+      userInfo = await vkidAuthService.getUserInfo(tokenData.access_token);
+    }
+    else {
+      throw new AppError('No access_token or code provided', 400);
+    }
     
     // Находим или создаём пользователя
     const user = await vkidAuthService.findOrCreateUser(userInfo);

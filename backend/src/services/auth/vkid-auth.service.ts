@@ -3,100 +3,133 @@ import { config } from '../../config/index';
 import prisma from '../../lib/prisma';
 import { generateAccessToken, generateRefreshToken } from '../../lib/jwt';
 import { AppError } from '../../middleware/errorHandler';
-
-export interface VKIDTokenResponse {
-  access_token: string;
-  expires_in: number;
-  user_id: number;
-  email?: string;
-}
+import { z } from 'zod';
 
 export interface VKIDUserInfo {
-  id: number;
+  id?: string | number;
+  user_id?: string | number;
+  email?: string;
   name?: string;
   first_name?: string;
   last_name?: string;
   avatar?: string;
-  email?: string;
-}
-
-export interface VKIDAuthRequest {
-  code: string;
-  device_id: string;
-  code_verifier?: string;
 }
 
 export const vkidAuthService = {
-  async exchangeCode(code: string, device_id: string, code_verifier?: string): Promise<VKIDTokenResponse> {
-    // Для бизнес-аккаунтов используем Service Token
-    const headers: any = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    };
+  /**
+   * Обменять code на токены (OAuth 2.0)
+   */
+  async exchangeCode(code: string, deviceId: string, codeVerifier?: string) {
+    try {
+      const response = await axios.post('https://id.vk.com/oauth2/token', {
+        client_id: config.VK_CLIENT_ID,
+        client_secret: config.VK_CLIENT_SECRET,
+        grant_type: 'authorization_code',
+        code: code,
+        device_id: deviceId,
+        code_verifier: codeVerifier,
+        redirect_uri: config.VK_REDIRECT_URI,
+      });
 
-    // Если есть Service Token (для бизнес-аккаунтов)
-    if (config.VK_SERVICE_TOKEN) {
-      headers['Authorization'] = `Bearer ${config.VK_SERVICE_TOKEN}`;
+      console.log('📊 VK ID Token Response:', response.data);
+
+      return {
+        access_token: response.data.access_token,
+        expires_in: response.data.expires_in,
+        token_type: response.data.token_type,
+        id_token: response.data.id_token,
+        user_id: response.data.user_id,
+        email: response.data.email,
+      };
+    } catch (error: any) {
+      console.error('❌ VK ID Exchange Code Error:', error.response?.data || error.message);
+      throw new AppError(
+        'Failed to exchange code for tokens',
+        400,
+        error.response?.data || error.message
+      );
     }
-
-    const params: any = {
-      client_id: config.VK_CLIENT_ID,
-      redirect_uri: config.VK_REDIRECT_URI,
-      code,
-      device_id,
-      grant_type: 'authorization_code',
-    };
-
-    // Добавляем code_verifier если есть (PKCE)
-    if (code_verifier) {
-      params.code_verifier = code_verifier;
-    }
-
-    // Если нет Service Token, используем client_secret (для обычных аккаунтов)
-    if (!config.VK_SERVICE_TOKEN && config.VK_CLIENT_SECRET) {
-      params.client_secret = config.VK_CLIENT_SECRET;
-    }
-
-    const response = await axios.post<VKIDTokenResponse>(
-      'https://id.vk.com/oauth2/auth',
-      new URLSearchParams(params),
-      { headers }
-    );
-    return response.data;
   },
 
+  /**
+   * Получить информацию о пользователе из VK ID
+   */
   async getUserInfo(accessToken: string): Promise<VKIDUserInfo> {
-    const response = await axios.get('https://id.vk.com/oauth2/user_info', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        fields: 'id,name,first_name,last_name,avatar,email',
-      },
-    });
-    return response.data;
-  },
-
-  async findOrCreateUser(vkUserInfo: VKIDUserInfo) {
-    let user = await prisma.user.findUnique({
-      where: { vk_id: vkUserInfo.id },
-    });
-
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          vk_id: vkUserInfo.id,
-          email: vkUserInfo.email || `${vkUserInfo.id}@vkid.local`,
-          username: `${vkUserInfo.first_name || ''} ${vkUserInfo.last_name || ''}`.trim() || `vk_user_${vkUserInfo.id}`,
-          first_name: vkUserInfo.first_name,
-          last_name: vkUserInfo.last_name,
-          avatar_url: vkUserInfo.avatar,
-          role: 'user',
-          is_active: true,
-          is_blocked: false,
+    try {
+      const response = await axios.get('https://id.vk.com/oauth2/user_info', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          client_id: config.VK_CLIENT_ID,
+          fields: 'id,name,first_name,last_name,avatar,email',
         },
       });
+
+      const data = response.data;
+      console.log('📊 VK ID User Info Response:', data);
+
+      // Поддержка разных форматов ответа
+      const userData = data.user || data;
+
+      return {
+        id: String(userData.user_id || userData.id || data.user_id || data.id),
+        email: userData.email || data.email,
+        name: userData.name || data.name || `${userData.first_name || ''} ${userData.last_name || ''}`.trim(),
+        first_name: userData.first_name || data.first_name,
+        last_name: userData.last_name || data.last_name,
+        avatar: userData.avatar || data.avatar,
+      };
+    } catch (error: any) {
+      console.error('❌ VK ID UserInfo Error:', error.response?.data || error.message);
+      throw new AppError(
+        'Failed to get user info from VK ID',
+        400,
+        error.response?.data || error.message
+      );
+    }
+  },
+
+  /**
+   * Найти или создать пользователя
+   */
+  async findOrCreateUser(vkUserInfo: VKIDUserInfo) {
+    const userId = String(vkUserInfo.id);
+
+    if (!userId) {
+      throw new AppError('User ID not found in VK ID response', 500);
     }
 
-    return user;
+    const email = vkUserInfo.email || `${userId}@vkid.local`;
+    const username = vkUserInfo.name || `VK User ${userId}`;
+    const avatar = vkUserInfo.avatar;
+
+    let user = await prisma.user.findUnique({
+      where: { vkId: userId },
+    });
+
+    if (user) {
+      // Обновляем существующего пользователя
+      user = await prisma.user.update({
+        where: { vkId: userId },
+        data: {
+          avatarUrl: avatar,
+          username: user.username || username,
+        },
+      });
+      return user;
+    }
+
+    // Создаём нового пользователя
+    return await prisma.user.create({
+      data: {
+        vkId: userId,
+        email,
+        username,
+        role: 'user',
+        isActive: true,
+        isBlocked: false,
+      },
+    });
   },
 };

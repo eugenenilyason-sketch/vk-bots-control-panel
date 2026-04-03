@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Вход - VK Neuro-Agents</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
@@ -38,22 +39,11 @@
             @endif
             
             <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
-<!-- VK ID Button -->
-@include('components.vkid-button')
+            
+            <!-- VK ID Button -->
+            @include('components.vkid-button')
+
+            <p style="margin-top: 24px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                Нет аккаунта? <a href="/register" style="color: var(--accent-primary);">Зарегистрироваться</a>
+            </p>
         </form>
-
-        <div style="margin: 24px 0; position: relative; text-align: center;">
-            <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border-color);"></div>
-            <span style="background: white; padding: 0 16px; color: var(--text-muted); font-size: 13px; position: relative;">ИЛИ</span>
-        </div>
-
-        <a href="https://oauth.vk.com/authorize?client_id=54514184&redirect_uri={{ urlencode(env('VK_REDIRECT_URI', 'https://lianium.ru')) }}&response_type=code&scope=messages,groups,offline" class="btn btn-vk" style="display: block; text-align: center; text-decoration: none;">
-            Войти через VK
-        </a>
-
-        <p style="margin-top: 24px; text-align: center; color: var(--text-muted); font-size: 13px;">
-            Нет аккаунта? <a href="/register" style="color: var(--accent-primary);">Зарегистрироваться</a>
-        </p>
-    </div>
-</body>
-</html>
