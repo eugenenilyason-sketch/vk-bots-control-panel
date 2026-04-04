@@ -179,3 +179,4 @@ coverage/
 *.temp
 dev-data/
 test-data/
+tests/
